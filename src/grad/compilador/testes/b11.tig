@@ -1,0 +1,8 @@
+let
+	var b := 11
+in
+	b := b + 1;
+
+	if b = b then print("Ok")
+	else print("aaaa")
+end

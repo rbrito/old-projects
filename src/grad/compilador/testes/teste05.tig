@@ -1,0 +1,4 @@
+let
+in
+a.b.c.d := 5
+end

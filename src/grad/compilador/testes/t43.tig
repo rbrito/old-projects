@@ -1,0 +1,7 @@
+let 
+	var a := "xyzzy"
+	var b := "xyzzy"
+
+in
+	if a = b then 42 else 33
+end

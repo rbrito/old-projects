@@ -1,0 +1,117 @@
+Comentários sobre a implementação específica de plataforma do
+Compilador Tiger.
+
+
+1 - A arquitetura MIPS possui um total de 32 registradores, numerados
+    de 0 a 31 e referenciados como $0 até $31.  Entretanto, a
+    especificação da plataforma tambem determina nomes para esses
+    registradores, que podem ser usados em lugar de seus números. Por
+    exemplo, é permitido usar $zero em vez de $0.
+
+    Uma possível mudança na classe Temp.Temp que seria bem-vinda no
+    projeto seria a adição de mais um construtor que recebesse uma
+    string como um parametro e que, em vez de guardar algo como t123
+    como a descricao interna do temporário, guardasse a string passada
+    como parâmetro. Desta forma, poderíamos dar o seguinte comando:
+       
+       private final Temp zero = new Temp.Temp("$zero");
+       
+    e o método tempMap simplesmente chamaria o método toString dos
+    temporários (por exemplo, zero.toString()) em vez de fazer
+    diversos if's para determinar o nome do registrador (no caso,
+    "$zero"). Por exemplo,
+
+    public String tempMap(Temp temp) {
+        Temp i = specialregs;
+        while (i != null && i.head != temp) { i = i.tail; }
+        if (i != null) return i.toString();
+        return null;
+    }
+
+    em vez de:
+
+    public String tempMap(Temp temp) {
+	if (temp == at) return "$at";
+	if (temp == v0) return "$v0";
+	if (temp == v1) return "$v1";
+	if (temp == k0) return "$k0";
+	if (temp == k1) return "$k1";
+	if (temp == gp) return "$gp";
+	if (temp == sp) return "$sp";
+	if (temp == fp) return "$fp";
+	if (temp == ra) return "$ra";
+	if (temp == zero) return "$zero";
+	return null;
+    }
+
+
+2 - A função Frame.codegen(Tree.Stm stm) chama a implementação
+    particular (dependente de arquitetura) da seleção de instruções.
+    Entretanto, o livro fornece a implementação deste método *dentro*
+    da classe abstrata Frame.Frame. Por ser a implementação de
+    Frame.codegen() dependente de plataforma, estamos fazendo sua
+    implementação no módulo Mips (isto é, deixamos Frame.codegen()
+    como um método abstrato e sua implementação está a cargo de
+    métodos que fazem a herança da classe).
+
+3 - A arquitetura MIPS estipula que os valores de retorno de funções
+    são devolvidos em dois registradores, a saber $v0 e $v1. Dadas as
+    conveções do projeto de sempre trabalhar com variáveis de tamanho
+    1 palavra, estamos apenas considerando $v0 como o resultado de
+    funções.
+
+4 - Existem basicamente dois tipos de otimizações: as dependentes de
+    plataforma e as não dependentes.
+
+    Um dos melhores momentos para realizar otimização de código que é
+    independente de plataforma é imediatamente após a construção da
+    árvore de representação intermediária (possivelmente, após a
+    representação estar canônica). O otimizador de código, nestas
+    circustâncias, reconhece determinados padrões da árvore e os
+    substitui por uma outra árvore que compute o mesmo resultado (e
+    que tenha os mesmos efeitos colaterais) e que seja "mais
+    eficiente" (dependendo-se do critério de otimização escolhido).
+
+    Um exemplo deste tipo de otimização é o cálculo de expressões onde
+    os termos são constantes (por exemplo, 3 + 4 * 2). Este cálculo
+    pode ser realizado em tempo de compilação em vez de ser sempre
+    efetuado em tempo de execução, sendo que este pré-cálculo tem
+    diversos resultados desejáveis:
+
+    * geram-se menos instruções no código objeto/instruções assembly
+      (ficando, portanto, menor);
+    * o código objeto/assembly fica, em geral, mais rápido (pois menos
+      instruções devem ser executadas);
+    * menos temporários são usados/gerados no processo de construção
+      do código, o que pode facilitar o trabalho do alocador de
+      registradores.
+
+    Outras otimizações são dependentes de plataforma -- se, em uma
+    dada arquitetura, shifts de registradores são mais rápidos do que
+    multiplicações por inteiros, então uma instrução da forma
+
+	multi Rdest Rsrc 4 (multiplicacao de Rsrc por um imediato)
+
+    pode ser substituída por:
+
+	shl Rdest Rsrc 2 (shift para a esquerda)
+
+    ou
+
+	shla Rdest Rsrc 2 (shift para a esquerda aritmético)
+
+
+    Em nosso compilador, por não termos uma fase de de otimização
+    especificamente da árvore canônica, estamos fazendo uma "escolha
+    inteligente" de instruções em relação à arquitetura: se
+    identificamos uma nó da árvore canônica com um operador binário
+    com operandos constantes, estamos simplesmente efetuando a
+    operação entre estes operandos e carregando seu resultado em um
+    temporário destino.
+
+    Embora saibamos que tal otimização seria idealmente deixada a
+    cargo de uma etapa de otimização independente de plataforma, um
+    processo de escolha de instruções que identifique alguns casos
+    particulares pode deixar o código gerado consideravelmente mais
+    curto/rápido.
+

@@ -1,0 +1,7 @@
+/* teste de static link */
+let 
+	var a := 19
+	function f(i: int): int = (i+13)
+in
+	a := f(2 * 17)
+end

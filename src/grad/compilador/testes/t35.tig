@@ -1,0 +1,7 @@
+/* teste de uso de um vetor */
+let
+	type arr_t = array of int
+	var  arr := arr_t [10] of 17
+in
+	arr[19] := 13
+end

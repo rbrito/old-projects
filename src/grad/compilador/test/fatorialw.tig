@@ -1,0 +1,12 @@
+let
+  var fat := 0
+  var i := 1
+in
+  fat := 1;
+  while i<=6 do (
+    fat := fat*i;
+    i:=i+1
+  );
+  if fat=720 then print("OK fatorial com while\n")
+  else print("Deu pau em fatorial com while\n")
+end

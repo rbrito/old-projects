@@ -1,0 +1,8 @@
+let 
+	type a = b
+
+	var a := nil
+
+
+in
+end

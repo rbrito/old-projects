@@ -1,0 +1,8 @@
+let 
+	type a = b /* declaracoes consecutivas */
+	type b = int
+
+	var a:a := 0
+in
+	(a := 5; a:= "aeiou")
+end

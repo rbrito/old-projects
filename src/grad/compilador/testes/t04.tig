@@ -1,0 +1,5 @@
+/* Erro de semantica: corpo do laco nao pode produzir valor */
+let
+in
+	while 43 do 3
+end

@@ -1,0 +1,8 @@
+let
+  var ext := 5 
+  function f(n:int) : int =
+    ext+n
+in
+  if f(3) = 8 then print("static link funcionou\n")
+  else print("static link nao funcionou\n")
+end

@@ -1,0 +1,14 @@
+let
+	type myint = int
+	var a:myint := 5
+
+	type  arrtype = array of myint
+	var arr1:arrtype := arrtype [10] of 0
+
+	type arr = arrtype
+
+	var a:myint:= 5
+	function aeiou(b:int, c:myint):xyz = (a := if (3) then 5 else 4; 7)
+in
+	while (a) do (aeiou(3, 4))
+end

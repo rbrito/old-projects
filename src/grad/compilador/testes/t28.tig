@@ -1,0 +1,5 @@
+/* erro de sintaxe: ponto e virgula que nao separa uma expressao de outra */
+let
+in
+	print("aeiou");
+end

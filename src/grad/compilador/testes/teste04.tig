@@ -1,0 +1,5 @@
+let
+  var a := "aeiou"
+in
+  a := 5
+end

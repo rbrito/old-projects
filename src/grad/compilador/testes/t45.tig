@@ -1,0 +1,7 @@
+/* teste de comparacao de variaveis */
+let
+	var a := 13
+	var b := 19
+in
+	if (a = b) then 17 else 23
+end

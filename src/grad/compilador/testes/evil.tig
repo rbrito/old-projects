@@ -1,0 +1,11 @@
+/* Programa "maldoso" */
+let
+in
+	for i := 1 to 5 do (
+		let
+			function f(i: int) = (break)
+		in
+			f(19)
+		end
+	)
+end

@@ -1,0 +1,9 @@
+let 
+	var a := 0
+	var b := 0
+in
+	(a := 5;
+	 b := 3;
+	 a := b + b;
+	 a := b - b)
+end

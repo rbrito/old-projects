@@ -1,0 +1,35 @@
+#!/bin/sh 
+
+#precisa definir as variaveis-ambiente COMPILAPROJ e COMPILAARGS
+
+caminho=$PWD
+
+tig=$1
+asm=$2
+[ $# == 1 ] && asm=${tig%%tig}s
+
+[ $# == 0 ] &&\
+  echo Use: compila ARQUIVOTIGER && exit 1
+[ .$COMPILAPROJ == . ] &&\
+  echo falta atribuir valor a variavel ambiente COMPILAPROJ && exit 1
+[ .$COMPILAARGS == . ] &&\
+  echo falta atribuir valor a variavel ambiente COMPILAARGS && exit 1
+
+cd ../$COMPILAPROJ;
+rm -v $caminho/$tig.s $caminho/$asm 2>/dev/null
+
+echo compilando $caminho/$tig pra $caminho/$asm
+if [ $COMPILAARGS == 2 ]
+then
+  java Main.Main $caminho/$tig $caminho/$asm
+else
+  java Main.Main $caminho/$tig
+  if test -f  $caminho/$tig.s
+  then
+    mv -v $caminho/$tig.s $caminho/$asm 2>/dev/null
+  else
+    echo nao achei o arquivo assembly gerado
+  fi
+fi
+echo compilado $caminho/$tig pra $caminho/$asm:
+ls -l $caminho/$asm

@@ -1,0 +1,12 @@
+let
+  var ext := 5 
+  function f(n:int) : int =
+    let
+      function g():int = ext
+    in
+      g()+n
+    end
+in
+  if f(3) = 8 then print("static link com dois niveis funcionou\n")
+  else print("static link com dois niveis nao funcionou\n")
+end

@@ -1,0 +1,10 @@
+let
+	var a := 7
+	var b := 11
+in
+	a := a + b;
+
+	if a = b then print("Ok");
+
+	a := a + b
+end

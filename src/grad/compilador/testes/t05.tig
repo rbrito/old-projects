@@ -1,0 +1,5 @@
+let
+	var a := 5
+in
+	if a > 1002 then 33 else 44
+end

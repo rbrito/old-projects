@@ -1,0 +1,7 @@
+let 
+	function f(): int = 3
+	function g(): int = 4
+in
+	if f()+g() = 7 then print("chamada de funcao funcionou\n")
+	else print("Deu pau em chamada de funcao\n")
+end

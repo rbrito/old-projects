@@ -1,0 +1,11 @@
+let 
+	function f(): int =
+	let
+          function g(): int = 4
+	in
+	  g()+1
+	end
+in
+	if f() = 5 then print("chamada de funcao aninhada funcionou\n")
+	else print("Deu pau em chamada de funcao aninhada\n")
+end

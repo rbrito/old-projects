@@ -1,0 +1,9 @@
+let 
+	var a := 7
+	var b := 11
+
+	function f(): int = (b) /* definicao de funcao c/ uso de static link */
+in
+	(a := f();
+	 a := f() + b) /* uso de soma */
+end

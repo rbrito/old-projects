@@ -1,0 +1,6 @@
+let 
+        function f(n:int): int = n+1
+in
+	if f(4) = 5 then print("chamada de funcao com argumentos funcionou\n")
+	else print("Deu pau em chamada de funcao com argumentos \n")
+end

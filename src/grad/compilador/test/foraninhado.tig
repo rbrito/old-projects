@@ -1,0 +1,9 @@
+let
+   var b : int := 0
+in
+   for a := 1 to 5 do
+     for c := 1 to 6 do
+       b := b + 1;
+   if b=30 then print("OK for aninhado\n")
+   else print("Deu pau for aninhado\n")
+end

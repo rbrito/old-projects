@@ -1,0 +1,39 @@
+let
+  type strArray = array of string
+  type intArray = array of int
+
+  var  tiles   := 3
+  var  name    := strArray [3] of ""
+  var  count   := intArray [3] of 0
+
+  function hanoi(N:int, FROM:int, TO:int) =
+    let
+      var WORK:int := 3-FROM-TO
+	 
+      function printstack(s:int) =
+      ( print(name[s]);
+        print("("); print(chr(count[s]+ord("0"))); print(")") )
+    in
+      if N>0 then (
+        hanoi(N-1,FROM,WORK);
+  		 
+        print("move tile ");   print(chr(N+ord("0")));
+        print(" from ");       printstack(FROM);
+        print(" to ");         printstack(TO);
+        print("\n");
+  
+        count[FROM]:=count[FROM]-1;
+        count[TO]  :=count[TO]+1;
+  		 
+        hanoi(N-1,WORK,TO)
+      )
+    end
+
+  function newname(lastname:string): string =
+    (chr(1+ord(lastname)))
+
+in
+  name[0]:="A";  name[1]:=newname(name[0]);  name[2]:=newname(name[1]);
+  count[0]:=tiles;
+  hanoi(count[0],0,1)
+end

@@ -1,0 +1,8 @@
+let
+   var b : int := 0
+in
+   for a := 1 to 5 do
+      b := b + 1;
+   if b=5 then print("OK for\n")
+   else print("Deu pau for\n")
+end

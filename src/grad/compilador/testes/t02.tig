@@ -1,0 +1,7 @@
+let
+    var a := 5
+    var b : int := 6
+in
+	a := a + 1;
+	b := a
+end

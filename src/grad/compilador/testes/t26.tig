@@ -1,0 +1,7 @@
+let
+	type matriz_typ = array of int
+	var a := matriz_typ [10] of 0
+	var i := 13
+in
+	a[i] := 17
+end

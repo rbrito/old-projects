@@ -1,0 +1,9 @@
+/* teste de uso de um vetor */
+let
+  type intArray = array of int
+  var  arr := intArray [10] of 1
+in
+   arr[6] := 10;
+   if arr[6]=arr[5]+9 then print("OK array\n")
+   else print("Deu pau array\n")
+end

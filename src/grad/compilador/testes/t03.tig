@@ -1,0 +1,6 @@
+let
+    var a := "aeiou"
+    function f() : int = (3)
+in
+	f()
+end

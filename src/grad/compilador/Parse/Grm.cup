@@ -1,0 +1,308 @@
+/*
+        Arquivo: Grm.cup
+  
+        MAC 410 - Fase do Capitulo 4
+  
+        Adriano N. Rodrigues
+        Rogerio T. Brito
+  
+ 
+        README:
+        ------ 
+ 
+        A gramatica contem 4 conflitos shift/reduce. Isso precisa ser levado
+        em conta na linha de comando do CUP (opcao 'expect'), eg:
+ 
+        java java_cup.Main -parser Grm -expect 4 -dump_grammar -dump_states \
+        -nonterms <Grm.cup >Grm.out 2>Grm.err
+ 
+*/
+
+package Parse;
+
+action code {:
+	// chamada do pretty-printer
+	// public Absyn.Print p = new Absyn.Print(System.out);
+
+	static Symbol.Symbol sym(String s) {
+		return Symbol.Symbol.symbol(s);
+	}
+:};
+
+parser code  {: 
+  public Absyn.Exp parseResult;
+  Lexer lexer;
+
+  public void syntax_error(java_cup.runtime.Symbol current) {
+   report_error("Syntax error (" + current.sym + ")", current);
+  }
+
+  ErrorMsg.ErrorMsg errorMsg;
+
+  public void report_error(String message, 
+			   java_cup.runtime.Symbol info) {
+      errorMsg.error(info.left, message);
+  }
+
+  public Grm(Lexer l, ErrorMsg.ErrorMsg err) {
+    this();
+    errorMsg=err;
+    lexer=l;
+  }
+:};
+
+scan with {: return lexer.nextToken(); :};
+
+terminal String ID, STRING;
+terminal Integer INT;
+terminal COMMA, COLON, SEMICOLON, LPAREN, RPAREN, 
+	LBRACK, RBRACK, LBRACE, RBRACE, DOT, PLUS, MINUS, 
+	TIMES, DIVIDE, EQ, NEQ, LT, LE, GT, GE, AND, OR, 
+	ASSIGN, ARRAY, IF, THEN, ELSE, WHILE, FOR, TO, DO, 
+	LET, IN, END, OF, BREAK, NIL, FUNCTION, VAR, TYPE;
+
+terminal UMINUS;
+
+non terminal Absyn.Exp program, exp;
+non terminal Absyn.Var lvalue;
+non terminal Absyn.Dec dec, tydec, vardec, t;
+non terminal Absyn.FunctionDec fundec, fun;
+non terminal Absyn.DecList decs;
+non terminal Absyn.Ty ty;
+non terminal Absyn.ExpList seq_exp, seq_exp1, args, args1;
+non terminal Absyn.FieldExpList seq_field, seq_field1;
+non terminal Absyn.FieldList tyfields, tyfields1;
+
+
+precedence left AND, OR;
+precedence nonassoc EQ, NEQ, GT, LT, GE, LE;
+precedence left PLUS, MINUS;
+precedence left TIMES, DIVIDE;
+precedence left UMINUS;
+
+start with program;
+
+program ::= /* vazio */
+	{: RESULT = null; :}
+	|
+	exp:e
+	{: RESULT = e; /* p.prExp(RESULT = e, 0); System.out.println(""); */ :}
+	;
+
+decs	::= /* vazio */
+	{: RESULT = null; :}
+	|
+	dec:d decs:dl
+	{: RESULT = new Absyn.DecList(d, dl); :}
+	;
+
+dec	::= tydec:t
+	{: RESULT = (Absyn.Dec) t; :}
+	|
+	vardec:v
+	{: RESULT = (Absyn.Dec) v; :}
+	|
+	fundec:f
+	{: RESULT = (Absyn.Dec) f; :}
+	;
+
+tydec	::= TYPE ID:s EQ ty:ty t:t
+	{: RESULT = new Absyn.TypeDec(sleft, sym(s), ty, (Absyn.TypeDec) t); :}
+	;
+
+t	::= /* vazio */
+	{: RESULT = null; :}
+	|
+	tydec:t
+	{: RESULT = t; :}
+	;
+
+ty	::= ID:s
+	{: RESULT = new Absyn.NameTy(sleft, sym(s)); :}
+	|
+	LBRACE tyfields:fl RBRACE
+	{: RESULT = new Absyn.RecordTy(flleft, fl); :}
+	|
+	ARRAY OF ID:s
+	{: RESULT = new Absyn.ArrayTy(sleft, sym(s)); :}
+	;
+
+tyfields ::= /* vazio */
+	{: RESULT = null; :}
+	|
+	tyfields1:t /* uma ou mais declaracoes de campos */
+	{: RESULT = t; :}
+	;
+
+tyfields1 ::= ID:s COLON ID:t
+	{: RESULT = new Absyn.FieldList(sleft, sym(s), sym(t), null); :}
+	|
+	ID:s COLON ID:t COMMA tyfields1:fl
+	{: RESULT = new Absyn.FieldList(sleft, sym(s), sym(t), fl); :}
+	;
+
+vardec	::= VAR ID:s ASSIGN exp:e
+	{: RESULT = new Absyn.VarDec(sleft, sym(s), null, e); :}
+	|
+	VAR ID:s COLON ID:t ASSIGN exp:e
+	{: RESULT = new Absyn.VarDec(sleft, sym(s), 
+			    new Absyn.NameTy(tleft, sym(t)), e); :}
+	;
+
+fundec	::= FUNCTION ID:s LPAREN tyfields:fl RPAREN EQ exp:e fun:f
+	{: RESULT = new Absyn.FunctionDec(sleft, sym(s), fl, null, e, f); :} 
+	|
+	FUNCTION ID:s LPAREN tyfields:fl RPAREN COLON ID:nt EQ exp:e fun:f
+	{: RESULT = new Absyn.FunctionDec(sleft, sym(s), fl, new
+					Absyn.NameTy(ntleft, sym(nt)), e, f); :}
+	;
+
+fun	::= /* vazio */
+	{: RESULT = null; :}
+	| fundec:f
+	{: RESULT = f; :}
+	;
+
+exp	::= lvalue:v
+	{: RESULT = new Absyn.VarExp(vleft, v); :}
+	|
+	LPAREN seq_exp:el RPAREN
+	{: RESULT = new Absyn.SeqExp(elleft, el); :}
+	|
+	STRING:s
+	{: RESULT = new Absyn.StringExp(sleft, s); :}
+	|
+	INT:i
+	{: RESULT = new Absyn.IntExp(ileft, i.intValue()); :}
+	|
+	NIL:n
+	{: RESULT = new Absyn.NilExp(nleft); :}
+	|
+	ID:s LPAREN args:el RPAREN
+	{: RESULT = new Absyn.CallExp(sleft, sym(s), el); :}
+	|
+	MINUS exp:r
+	{: RESULT = new Absyn.OpExp(rleft, new Absyn.IntExp(rleft, 0),
+					    Absyn.OpExp.MINUS, r); :}
+	%prec UMINUS
+	|
+	exp:l PLUS exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.PLUS, r);  :}
+	|
+	exp:l MINUS exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.MINUS, r);  :}
+	|
+	exp:l TIMES exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.MUL, r);  :}
+	|
+	exp:l DIVIDE exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.DIV, r);  :}
+	|
+	exp:l EQ exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.EQ, r);  :}
+	|
+	exp:l NEQ exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.NE, r);  :}
+	|
+	exp:l GT exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.GT, r);  :}
+	|
+	exp:l LT exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.LT, r);  :}
+	|
+	exp:l GE exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.GE, r);  :}
+	|
+	exp:l LE exp:r
+	{: RESULT = new Absyn.OpExp(lleft, l, Absyn.OpExp.LE, r);  :}
+	|
+	exp:l AND exp:r
+	{: RESULT = new Absyn.IfExp(lleft, l, r, new Absyn.IntExp(lleft, 0)); :}
+	|
+	exp:l OR exp:r
+	{: RESULT = new Absyn.IfExp(lleft, l, new Absyn.IntExp(lleft, 1), r); :}
+	|
+	lvalue:l ASSIGN exp:e
+	{: RESULT = new Absyn.AssignExp(lleft, l, e); :}
+	|
+	IF exp:e1 THEN exp:e2 ELSE exp:e3
+	{: RESULT = new Absyn.IfExp(e1left, e1, e2, e3); :}
+	|
+	IF exp:e1 THEN exp:e2
+	{: RESULT = new Absyn.IfExp(e1left, e1, e2); :}
+	|
+	WHILE exp:e1 DO exp:e2
+	{: RESULT = new Absyn.WhileExp(e1left, e1, e2); :}
+	|
+	FOR ID:s ASSIGN exp:e1 TO exp:e2 DO exp:e3
+	{: RESULT = new Absyn.ForExp(sleft, new Absyn.VarDec(sleft, sym(s),
+					     null, e1), e2, e3); :}
+	|
+	BREAK:b
+	{: RESULT = new Absyn.BreakExp(bleft); :}
+	|
+	LET decs:dl IN seq_exp:e END
+	{: RESULT = new Absyn.LetExp(dlleft, dl, new Absyn.SeqExp(eleft, e)); :}
+	|
+	ID:s LBRACE seq_field:fel RBRACE
+	{: RESULT = new Absyn.RecordExp(sleft, sym(s), fel); :}
+	|
+	ID:s LBRACK exp:e RBRACK OF exp:in
+	{: RESULT = new Absyn.ArrayExp(sleft, sym(s), e, in); :}
+	;
+
+lvalue	::= ID:s
+	{: RESULT = new Absyn.SimpleVar(sleft, sym(s)); :}
+	|
+	ID:s LBRACK exp:e RBRACK
+	{: RESULT = new Absyn.SubscriptVar(sleft, new 
+                                Absyn.SimpleVar(sleft, sym(s)), e); :}
+	|
+	lvalue:l DOT ID:s
+	{: RESULT = new Absyn.FieldVar(lleft, l, sym(s)); :}
+	|
+	lvalue:l LBRACK exp:e RBRACK
+	{: RESULT = new Absyn.SubscriptVar(lleft, l, e); :}
+	;
+
+seq_field ::= /* vazio */
+	{: RESULT = null; :}
+	|
+	seq_field1:e /* um ou mais campos */
+	{: RESULT = e; :}
+	;
+
+seq_field1 ::= ID:s EQ exp:e
+	{: RESULT = new Absyn.FieldExpList(sleft, sym(s), e, null); :}
+	|
+	ID:s EQ exp:e COMMA seq_field1:fel
+	{: RESULT = new Absyn.FieldExpList(sleft, sym(s), e, fel); :}
+	;
+
+seq_exp ::= /* vazio */
+	{: RESULT = null; :}
+	|
+	seq_exp1:e /* uma ou mais expresses */
+	{: RESULT = e; :}
+	;
+
+seq_exp1 ::= exp:e
+	{: RESULT = new Absyn.ExpList(e, null); :}
+	|
+	exp:e SEMICOLON seq_exp1:el
+	{: RESULT = new Absyn.ExpList(e, el); :}
+	;
+
+args	::= /* vazio */
+	{: RESULT = null; :}
+	|
+	args1:e /* um ou mais argumentos */
+	{: RESULT = e; :}
+	;
+
+args1	::= exp:e
+	{: RESULT = new Absyn.ExpList(e, null); :}
+	|
+	exp:e COMMA args1:el
+	{: RESULT = new Absyn.ExpList(e, el); :}
+	;

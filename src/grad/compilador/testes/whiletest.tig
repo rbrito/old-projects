@@ -1,0 +1,7 @@
+let
+   var a : int := 1
+   var b : int := 0
+in
+   while a <= 5 do
+	(b := b + 1; a := a + 1)
+end

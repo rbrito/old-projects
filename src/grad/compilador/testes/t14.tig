@@ -1,0 +1,8 @@
+let 
+	var a := 7
+	var b := 11
+
+	function f(): int = (b)
+in
+	a := f()
+end

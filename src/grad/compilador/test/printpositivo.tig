@@ -1,0 +1,17 @@
+let
+  function printpositivo(i: int) =
+   let
+     var pot10 := 1
+   in 
+     while pot10<=i do
+	pot10 := pot10 * 10;
+     while pot10>=10 do (
+	pot10 := pot10 / 10;
+	print(chr(i/pot10+ord("0")));
+        i := i - i/pot10*pot10
+     )
+  end
+       
+in
+  printpositivo(150)
+end

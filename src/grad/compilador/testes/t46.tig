@@ -1,0 +1,7 @@
+/* teste de comparacao de strings */
+let
+	var a := "aeiou"
+	var b := "abcde"
+in
+	if (a <> b) then 13 else 19
+end

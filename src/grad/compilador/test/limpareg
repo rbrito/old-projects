@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+#  Troca nomes de registradores pelos respectivos números
+#  O cross-assembler exige isto :-(
+#
+#  Usar como um filtro. Ex:
+#     cat meuarquivo.s | limpareg > meunovoarquivo.s
+#  
+sed s/\$zero/\$0/g |\
+ sed s/\$v0/\$2/g |\
+ sed s/\$v1/\$3/g |\
+ sed s/\$a0/\$4/g |\
+ sed s/\$a1/\$5/g |\
+ sed s/\$a2/\$6/g |\
+ sed s/\$a3/\$7/g |\
+ sed s/\$t0/\$8/g |\
+ sed s/\$t1/\$9/g |\
+ sed s/\$t2/\$10/g |\
+ sed s/\$t3/\$11/g |\
+ sed s/\$t4/\$12/g |\
+ sed s/\$t5/\$13/g |\
+ sed s/\$t6/\$14/g |\
+ sed s/\$t7/\$15/g |\
+ sed s/\$s0/\$16/g |\
+ sed s/\$s1/\$17/g |\
+ sed s/\$s2/\$18/g |\
+ sed s/\$s3/\$19/g |\
+ sed s/\$s4/\$20/g |\
+ sed s/\$s5/\$21/g |\
+ sed s/\$s6/\$22/g |\
+ sed s/\$s7/\$23/g |\
+ sed s/\$t8/\$24/g |\
+ sed s/\$t9/\$25/g |\
+ sed s/\$k0/\$26/g |\
+ sed s/\$kt0/\$26/g |\
+ sed s/\$k1/\$27/g |\
+ sed s/\$kt1/\$27/g |\
+ sed s/\$gp/\$28/g |\
+ sed s/\$ra/src/grad/compilador/\$31/g

@@ -1,0 +1,7 @@
+let
+	var a := 13
+	var b := 17
+in
+	a := b + 1;
+	b := b + 1
+end

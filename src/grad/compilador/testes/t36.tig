@@ -1,0 +1,6 @@
+/* teste de um for */
+let
+in
+	for i := 13 to 19 do (
+	)
+end

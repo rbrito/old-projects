@@ -1,0 +1,44 @@
+let
+  function printint(i: int) =
+    let function f(i:int) = if i>0 
+  	     then (f(i/10); print(chr(i-i/10*10+ord("0"))))
+     in if i<0 then (print("-"); f(-i))
+        else if i>0 then f(i)
+        else print("0")
+    end
+
+  function erastostenes(maxp:int) =
+    let
+      var p := 0
+      var m := 0
+      type intArray = array of int
+      var primo := intArray [maxp+2] of 1
+    in
+      (
+        primo[maxp+1] := 1;  /* sentinela */
+        p := 2;
+        while p<=maxp do (
+          m:=p+p;
+          while m <= maxp do (
+            primo[m] := 0;
+            m := m+p
+          );
+          p := p+1;
+          while primo[p] = 0 do
+            p:=p+1
+        );
+      
+        print("Primos nao maiores que ");
+        printint(maxp);
+        print(":\n");
+        for p:=2 to maxp do 
+          if primo[p]=1 then (
+            printint(p);
+            print("\n")
+          )
+      )
+    end  
+
+  in
+    erastostenes(30)
+  end

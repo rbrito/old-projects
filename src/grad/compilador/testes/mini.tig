@@ -1,0 +1,18 @@
+let
+  var x1:=1
+  var x2:=2
+  var y:=0
+  var z:=0
+in
+    y := x1+x2;
+    z := x1+x2;
+    x1 := 19;
+    x2 := 13;
+
+    if y=z then
+      print("OK\n")
+    else
+      print("Deu pau\n");
+
+    y := 3
+end  

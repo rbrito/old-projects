@@ -1,0 +1,9 @@
+let
+
+	type a = c	
+	type c = int
+
+	var a :a:=10
+in
+
+end

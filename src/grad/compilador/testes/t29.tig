@@ -1,0 +1,5 @@
+/* teste de definicao de tipo de record nao recursivo */
+let
+	type rec_t = {a: int, b: int}
+in
+end

@@ -1,0 +1,8 @@
+#!/bin/sh
+make clean
+for i in *.tig; do echo; echo +++ $i +++; ./compila $i; read DUMMY; done
+echo
+echo  fontes tiger:
+ls *.tig |wc -l 
+echo  fontes assem:
+ls *.s |grep -v runtime.s|grep -v start.s |wc -l 

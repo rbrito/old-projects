@@ -1,0 +1,15 @@
+let 
+	type a = b /* declaracoes consecutivas */
+	type b = int
+	type c = string
+
+	/* variaveis com mesmo nome que tipos */
+	var a: a := 0 /* variavel com tipo explicito */
+	var c: c := "aeiou" /* variavel com tipo explicito */
+	var a: c := "aeiou" /* variavel redefinida -- ultima definicao e' a que vale */
+in
+	(a := "aeiou";
+	 c := "aeiou";
+	 c := a;
+	 a := c)
+end

@@ -1,0 +1,6 @@
+let 
+	var a := 9
+in
+	while (a >= 2) do
+		a := a + 1
+end

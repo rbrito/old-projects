@@ -1,0 +1,30 @@
+let 
+  var a := 5
+  var b := 3
+in
+  if a+b=8 then print("soma funcionou\n")
+  else print("Deu pau em soma\n");
+
+  if a-b=2 then print("subtracao funcionou\n")
+  else print("Deu pau em subtracao\n");
+
+  if a*b=15 then print("multiplicacao funcionou\n")
+  else print("Deu pau em multiplicacao\n");
+
+  if a/src/grad/compilador/b=1 then print("divisao funcionou\n")
+  else print("Deu pau em divisao\n");
+
+  if a=5 & b=3 then print("op logico & funcionou\n")
+  else print("Deu pau em op logico &\n");
+  if a=0 & b=3 then print("Deu pau em op logico &\n")
+  else print("op logico & funcionou\n");
+  if a=0 & b=0 then print("Deu pau em op logico &\n")
+  else print("op logico & funcionou\n");
+
+  if a=3 | b=3 then print("op logico | funcionou\n")
+  else print("Deu pau em op logico |\n");
+  if a=0 | b=0 then print("Deu pau em op logico |\n")
+  else print("op logico | funcionou\n");
+  if a=0 | b=0 then print("Deu pau em op logico |\n")
+  else print("op logico | funcionou\n")
+end

@@ -1,0 +1,24 @@
+let 
+  var a := 5
+in
+  if a<>4 then print("comparacao <> funcionou\n")
+  else print("Deu pau em comparacao <>\n");
+  if a=5 then print("comparacao =  funcionou\n")
+  else print("Deu pau em comparacao =\n");
+  if a>=5 then print("comparacao >= funcionou\n")
+  else print("Deu pau em comparacao >= \n");
+  if a>=4 then print("comparacao >= funcionou\n")
+  else print("Deu pau em comparacao >= \n");
+  if a<=5 then print("comparacao <= funcionou\n")
+  else print("Deu pau em comparacao <=\n");
+  if a<=6 then print("comparacao <= funcionou\n")
+  else print("Deu pau em comparacao <=\n");
+  if a>4 then print("comparacao >  funcionou\n")
+  else print("Deu pau em comparacao >\n");
+  if a>5 then print("Deu pau em comparacao >\n")
+  else print("comparacao >  funcionou\n");
+  if a<5 then print("Deu pau em comparacao >\n")
+  else print("comparacao >  funcionou\n");
+  if a<6 then print("comparacao <  funcionou\n")
+  else print("Deu pau em comparacao <\n")
+end

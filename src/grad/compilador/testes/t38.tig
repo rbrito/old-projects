@@ -1,0 +1,7 @@
+/* teste de um for com break */
+let
+in
+	for i := 13 to 19 do (
+		if i <= 5 then break
+	)
+end

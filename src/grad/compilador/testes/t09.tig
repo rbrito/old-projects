@@ -1,0 +1,5 @@
+let
+	var a := 55
+in
+	a > 1002 & a < 0
+end

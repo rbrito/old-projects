@@ -1,0 +1,6 @@
+/* teste de uso de nil para um record */
+let
+	type rec_t = {a: int, b: int}
+	var  rec: rec_t := nil
+in
+end

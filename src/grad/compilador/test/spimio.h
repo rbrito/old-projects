@@ -1,0 +1,10 @@
+void   PrintInt(int);
+void   PrintFloat(float);
+void   PrintDouble(double);
+void   PrintString(char *);
+int    ReadInt(void);
+float  ReadFloat(void);
+double ReadDouble(void);
+void   ReadString(char *);
+void   Sbrk();
+void   Exit(int);

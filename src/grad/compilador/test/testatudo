@@ -1,0 +1,9 @@
+#!/bin/sh
+for i in *.s
+do if [ $i != runtime.s -a $i != start.s ]; then
+  echo; 
+  echo +++ $i +++; 
+  ./testa $i; 
+  read DUMMY;
+fi
+done

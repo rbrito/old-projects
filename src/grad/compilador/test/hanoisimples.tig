@@ -1,0 +1,15 @@
+let
+  var  tiles   := 3
+
+  function hanoi(N:int, FROM:int, TO:int) =
+    if N>0 then (
+      hanoi(N-1,FROM,3-FROM-TO);
+		 
+      print(chr(N+ord("0")));	print(": ");  print(chr(FROM+ord("A")));
+      print(" -> "); print(chr(TO+ord("A"))); print("\n");
+
+      hanoi(N-1,3-FROM-TO,TO)
+    )
+in
+  hanoi(tiles,0,1)
+end

@@ -1,0 +1,13 @@
+let
+
+/*	type a = {c1:int, c2:a}
+	type b = array of a
+	var c := b [10] of a {c1 = 3, c2 = nil} */
+
+	function f(n:int):int = g(5)
+	function g(n:int):string = (f(3); "string")
+
+in
+/*	while a = "aeiou" do */
+		g(2)
+end
