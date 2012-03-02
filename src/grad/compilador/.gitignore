@@ -1,0 +1,6 @@
+*.class
+Parse/Grm.err
+Parse/Grm.java
+Parse/Grm.out
+Parse/Yylex.java
+Parse/sym.java
