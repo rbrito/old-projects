@@ -8,37 +8,37 @@ import Assem.*;
 /***********************************************************************************************************
  *   CLASSE AssemFlowGraph                                                                                 *
  * ------------------------------------------------------------------------------------------------------- *
- *   Cria um grafo representando o fluxo de um conjunto de instruções.                                     *
+ *   Cria um grafo representando o fluxo de um conjunto de instruÃ§Ãµes.                                     *
  ***********************************************************************************************************/
 
 public class AssemFlowGraph extends FlowGraph
 {
-  // esta tabela associará rótulos com nós (onde estes rótulos são definidos)
+  // esta tabela associarÃ¡ rÃ³tulos com nÃ³s (onde estes rÃ³tulos sÃ£o definidos)
   private java.util.Dictionary labelsTable = new java.util.Hashtable();
-  // esta tabela associará instruções assembly a nós
+  // esta tabela associarÃ¡ instruÃ§Ãµes assembly a nÃ³s
   private java.util.Dictionary instrTable = new java.util.Hashtable();
 
   /* construtor AssemFlowGraph (InstrList instrs)
-   *    a partir de um conjunto de instruções, cria um grafo representando o fluxo do programa; para isso,
-   *    utilliza a informação sobre possíveis desvios que cada instrução assembly pode realizar.
+   *    a partir de um conjunto de instruÃ§Ãµes, cria um grafo representando o fluxo do programa; para isso,
+   *    utilliza a informaÃ§Ã£o sobre possÃ­veis desvios que cada instruÃ§Ã£o assembly pode realizar.
    */
   public AssemFlowGraph (InstrList instrs) {
     Node last = null;
     for ( ; instrs!=null; instrs=instrs.tail) {
       Node node;
-      // obtém um nó para esta instrução
+      // obtÃ©m um nÃ³ para esta instruÃ§Ã£o
       if (instrs.head instanceof LABEL)
 	node = getNodeDefiningLabel(((LABEL)instrs.head).label);
       else
 	node = newNode();
       instrTable.put(node,instrs.head);
-      // cria uma aresta do nó da instrução anterior para o nó da atual
+      // cria uma aresta do nÃ³ da instruÃ§Ã£o anterior para o nÃ³ da atual
       if (last != null)
 	addEdge(last,node);
       last = node;
-      // verifica se esta instrução assembly faz desvio para algum rótulo
+      // verifica se esta instruÃ§Ã£o assembly faz desvio para algum rÃ³tulo
       if (instrs.head instanceof OPER && ((OPER)instrs.head).jumps()!=null) {
-	// cria uma aresta entre este nó e todos aqueles para o qual a instrução assembly pode desviar
+	// cria uma aresta entre este nÃ³ e todos aqueles para o qual a instruÃ§Ã£o assembly pode desviar
 	OPER oper = (OPER) instrs.head;
 	for (LabelList ll=oper.jumps().labels; ll!=null; ll=ll.tail)
 	  addEdge (node, getNodeDefiningLabel(ll.head));
@@ -48,13 +48,13 @@ public class AssemFlowGraph extends FlowGraph
   }
 
   /* Node getNodeDefiningLabel (Label label)
-   *    devolve o nó associado à instrução que faz a declaração do rótulo especificado (esta declaração pode
-   *    não estar presente no conjunto de instruções assembly que estão sendo analisadas).
+   *    devolve o nÃ³ associado Ã  instruÃ§Ã£o que faz a declaraÃ§Ã£o do rÃ³tulo especificado (esta declaraÃ§Ã£o pode
+   *    nÃ£o estar presente no conjunto de instruÃ§Ãµes assembly que estÃ£o sendo analisadas).
    */
   private Node getNodeDefiningLabel (Label label) {
     Node node = (Node) labelsTable.get(label);
     if (node == null) {
-      // cria um nó representando onde o rótulo foi declarado
+      // cria um nÃ³ representando onde o rÃ³tulo foi declarado
       node = newNode();
       labelsTable.put(label, node);
     }
@@ -62,7 +62,7 @@ public class AssemFlowGraph extends FlowGraph
   }
 
   /* TempList def (Node n)
-   *    retorna o conjunto com os temporários definidos por esta instrução assembly (nó).
+   *    retorna o conjunto com os temporÃ¡rios definidos por esta instruÃ§Ã£o assembly (nÃ³).
    */
   public TempList def (Node n) {
     Instr instr = ((Instr)instrTable.get(n));
@@ -72,7 +72,7 @@ public class AssemFlowGraph extends FlowGraph
   }
 
   /* TempList def (Node n)
-   *    retorna o conjunto com os temporários usados por esta instrução assembly (nó).
+   *    retorna o conjunto com os temporÃ¡rios usados por esta instruÃ§Ã£o assembly (nÃ³).
    */
   public TempList use (Node n){
     Instr instr = ((Instr)instrTable.get(n));
@@ -82,14 +82,14 @@ public class AssemFlowGraph extends FlowGraph
   }
 
   /* boolean isMove (Node n)
-   *    verifica se este nó está associado a uma instrução MOVE.
+   *    verifica se este nÃ³ estÃ¡ associado a uma instruÃ§Ã£o MOVE.
    */
   public boolean isMove (Node n) {
     return ((Instr)instrTable.get(n)) instanceof MOVE;
   }
 
   /* Instr instr (Node n)
-   *    retorna a instrução assembly associada a este nó.
+   *    retorna a instruÃ§Ã£o assembly associada a este nÃ³.
    */
   public Instr instr (Node n) {
     return (Instr) instrTable.get(n);

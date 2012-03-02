@@ -7,25 +7,25 @@ import Temp.*;
 /***********************************************************************************************************
  *   CLASSE Liveness                                                                                       *
  * ------------------------------------------------------------------------------------------------------- *
- *   Faz an·lise do liveness de cada tempor·rio do programa e constrÛi um grafo de interferÍncias (este    *
- *   grafo possui uma aresta entre cada par de tempor·rios que est„o vivos no mesmo momento, indicando     *
- *   que n„o podem estar no mesmo registrador.                                                             *
+ *   Faz an√°lise do liveness de cada tempor√°rio do programa e constr√≥i um grafo de interfer√™ncias (este    *
+ *   grafo possui uma aresta entre cada par de tempor√°rios que est√£o vivos no mesmo momento, indicando     *
+ *   que n√£o podem estar no mesmo registrador.                                                             *
  ***********************************************************************************************************/
 
 public class Liveness extends InterferenceGraph
 {
-  // armazena todos os tempor·rios que est„o vivos apÛs o nÛ (instruÁ„o assembly) associado (live-out)
+  // armazena todos os tempor√°rios que est√£o vivos ap√≥s o n√≥ (instru√ß√£o assembly) associado (live-out)
   private java.util.Dictionary liveOutMap = new java.util.Hashtable();
-  // mapeia tempor·rios para nÛs no grafo de interferÍncia e vice-versa
+  // mapeia tempor√°rios para n√≥s no grafo de interfer√™ncia e vice-versa
   private java.util.Dictionary tempToNodeMap = new java.util.Hashtable();
   private java.util.Dictionary nodeToTempMap = new java.util.Hashtable();
-  // associa a cada tempor·rio o n˙mero de vezes em que È usado em todo o programa
+  // associa a cada tempor√°rio o n√∫mero de vezes em que √© usado em todo o programa
   private java.util.Dictionary useOfTemps = new java.util.Hashtable();
   // lista com todos os moves presentes
   private MoveList moveList = null;
 
   /* construtor Liveness (AssemFlowGraph flow)
-   *    realiza a an·lise do liveness e a contruÁ„o do grafo de interferÍncias a partir do grafo de fluxo
+   *    realiza a an√°lise do liveness e a contru√ß√£o do grafo de interfer√™ncias a partir do grafo de fluxo
    *    do programa.
    */
   public Liveness(AssemFlowGraph flow) {
@@ -35,18 +35,18 @@ public class Liveness extends InterferenceGraph
   }
 
   /* makeLiveMap (AssemFlowGraph flow)
-   *    faz a an·lise do liveness de cada tempor·rio a partir do grafo de fluxo do programa; como resultado,
-   *    indica, apÛs cada instruÁ„o assembly, quais os tempor·rios que est„o vivos.
+   *    faz a an√°lise do liveness de cada tempor√°rio a partir do grafo de fluxo do programa; como resultado,
+   *    indica, ap√≥s cada instru√ß√£o assembly, quais os tempor√°rios que est√£o vivos.
    */
   private void makeLiveMap (AssemFlowGraph flow) {
-    // armazena todos os tempor·rios que est„o vivos ao chegar a um nÛ (live-in)
+    // armazena todos os tempor√°rios que est√£o vivos ao chegar a um n√≥ (live-in)
     java.util.Dictionary liveInMap = new java.util.Hashtable();
-    // associa a cada instruÁ„o assembly o conjunto dos tempor·rios que s„o usados e os que s„o definidos
+    // associa a cada instru√ß√£o assembly o conjunto dos tempor√°rios que s√£o usados e os que s√£o definidos
     java.util.Dictionary uses = new java.util.Hashtable();
     java.util.Dictionary defs = new java.util.Hashtable();
     
-    // para cada instruÁ„o assembly, cria um TempSet com os tempor·rios que s„o usados e outro com os que
-    // s„o definidos
+    // para cada instru√ß√£o assembly, cria um TempSet com os tempor√°rios que s√£o usados e outro com os que
+    // s√£o definidos
     for (NodeList nl=flow.nodes(); nl!=null; nl=nl.tail) {
       liveInMap.put(nl.head,new TempSet());
       liveOutMap.put(nl.head,new TempSet());
@@ -54,46 +54,46 @@ public class Liveness extends InterferenceGraph
       uses.put(nl.head,new TempSet(flow.use(nl.head)));
     }
 
-    boolean changed;    // indica se houve mudanÁa nos conjuntos live-in e/ou live-out do algum nÛ
-    NodeList flowNodes = revert(flow.nodes());   // "inverte" os nÛs do grafo de fluxo para acelerar o
+    boolean changed;    // indica se houve mudan√ßa nos conjuntos live-in e/ou live-out do algum n√≥
+    NodeList flowNodes = revert(flow.nodes());   // "inverte" os n√≥s do grafo de fluxo para acelerar o
                                                  // processo de liveness
     do {
       changed = false;
-      // percorre todos os nÛs (instruÁıes assembly) do grafo
+      // percorre todos os n√≥s (instru√ß√µes assembly) do grafo
       for (NodeList nodes=flowNodes; nodes!=null; nodes=nodes.tail) {
 	Node n = nodes.head;
-	// obtÈm os conjuntos com os tempor·rios que est„o vivos ao entrar e ao sair da instruÁ„o assembly
+	// obt√©m os conjuntos com os tempor√°rios que est√£o vivos ao entrar e ao sair da instru√ß√£o assembly
 	TempSet oldIn = (TempSet) liveInMap.get(n);
 	TempSet oldOut = (TempSet) liveOutMap.get(n);
 	TempSet use = (TempSet) uses.get(n);
 	TempSet def = (TempSet) defs.get(n);
-	// atualiza o conjunto dos tempor·rios que est„o vivos ao sair deste nÛ
+	// atualiza o conjunto dos tempor√°rios que est√£o vivos ao sair deste n√≥
 	TempSet out = new TempSet();
 	for (NodeList s=n.succ(); s!=null; s=s.tail) {
 	  TempSet in_s = (TempSet) liveInMap.get(s.head);
 	  out = out.union(in_s);
 	}
 	liveOutMap.put (n, out);
-	// atualiza o conjunto dos tempor·rios que est„o vivos ao chegar a este nÛ
+	// atualiza o conjunto dos tempor√°rios que est√£o vivos ao chegar a este n√≥
 	TempSet in = use.union(out.difference(def));
 	liveInMap.put (n, in);
-	// verifica se houve mudanÁas
+	// verifica se houve mudan√ßas
 	changed = changed || (!in.isEqualTo(oldIn) || !out.isEqualTo(oldOut));
       }
     } while (changed);
   }
 
   /* buildInterferenceGraph (AssemFlowGraph flow)
-   *    com as informaÁıes sobre o liveness de cada tempor·rio e a partir do grafo de fluxo do programa,
-   *    constrÛi o grafop de interferÍncias.
+   *    com as informa√ß√µes sobre o liveness de cada tempor√°rio e a partir do grafo de fluxo do programa,
+   *    constr√≥i o grafop de interfer√™ncias.
    */
   private void buildInterferenceGraph (AssemFlowGraph flow) {
     for (NodeList nodes=flow.nodes(); nodes!=null; nodes=nodes.tail) {
       Assem.Instr instruct = flow.instr(nodes.head);
  
       if (instruct instanceof Assem.MOVE) {
-	// Para cada MOVE a <- c,  onde os tempor·rios b1 ... bj est„o live-out, ser· gerada uma aresta
-	// de interferÍncia (a,b1) .. (a,bj) para todo bk que n„o seja o mesmo que a.
+	// Para cada MOVE a <- c,  onde os tempor√°rios b1 ... bj est√£o live-out, ser√° gerada uma aresta
+	// de interfer√™ncia (a,b1) .. (a,bj) para todo bk que n√£o seja o mesmo que a.
 	Assem.MOVE move = (Assem.MOVE) instruct;
 	Node node1 = tnode(move.dst);
 	moveList = new MoveList (tnode(move.src), node1, moveList);
@@ -105,8 +105,8 @@ public class Liveness extends InterferenceGraph
 	  }
       }
       else {
-	// Para cada operaÁ„o que n„o for MOVE que defina um tempor·rio a, cujos tempor·rios live-out sejam
-	// b1 ... bj, ser· gerada uma aresta de interferÍncia (a,b1) ... (a,bj)
+	// Para cada opera√ß√£o que n√£o for MOVE que defina um tempor√°rio a, cujos tempor√°rios live-out sejam
+	// b1 ... bj, ser√° gerada uma aresta de interfer√™ncia (a,b1) ... (a,bj)
 	for (TempList t=flow.def(nodes.head); t!=null; t=t.tail) {
 	  Node node1 = tnode(t.head);
 	  TempSet out = (TempSet)liveOutMap.get(nodes.head);
@@ -121,7 +121,7 @@ public class Liveness extends InterferenceGraph
   }
 
   /* countNumberOfUses (AssemFlowGraph flow)
-   *    conta o n˙mero de vezez em que cada tempor·rio È utilizado em todo o programa.
+   *    conta o n√∫mero de vezez em que cada tempor√°rio √© utilizado em todo o programa.
    */
   private void countNumberOfUses (AssemFlowGraph flow) {
     for (NodeList nl=nodes(); nl!=null; nl=nl.tail) {
@@ -140,7 +140,7 @@ public class Liveness extends InterferenceGraph
   }
     
   /* Node tnode (Temp temp)
-   *    devolve o nÛ associado a um tempor·rio no grafo de interferÍncias.
+   *    devolve o n√≥ associado a um tempor√°rio no grafo de interfer√™ncias.
    */
   public Node tnode (Temp temp) {
     Node n = (Node) tempToNodeMap.get(temp);
@@ -153,7 +153,7 @@ public class Liveness extends InterferenceGraph
   }
 
   /* Temp gtemp (Node node)
-   *    devolve o tempor·rio associado a um nÛ do grafo de interferÍncias.
+   *    devolve o tempor√°rio associado a um n√≥ do grafo de interfer√™ncias.
    */
   public Temp gtemp (Node node) {
     return (Temp) nodeToTempMap.get(node);
@@ -167,7 +167,7 @@ public class Liveness extends InterferenceGraph
   }
 
   /* show (java.io.PrintStream out)
-   *    grava em out uma representaÁ„o deste grafo de interferÍncias.
+   *    grava em out uma representa√ß√£o deste grafo de interfer√™ncias.
    */
   public void show(java.io.PrintStream out) {
     for (NodeList p=nodes(); p!=null; p=p.tail) {
@@ -183,17 +183,17 @@ public class Liveness extends InterferenceGraph
   }
 
   /* int spillCost (Node n)
-   *    retorna o custo associado a fazer "spill" do nÛ (tempor·rio) fornecido.
+   *    retorna o custo associado a fazer "spill" do n√≥ (tempor√°rio) fornecido.
    */
   public int spillCost (Node n) {
-    // leva em conta o n˙mero de vezes que o tempor·rio È usado e o grau deste tempor·rio no grafo de
-    // interferÍncias
+    // leva em conta o n√∫mero de vezes que o tempor√°rio √© usado e o grau deste tempor√°rio no grafo de
+    // interfer√™ncias
     int uses = ((Integer)useOfTemps.get(gtemp(n))).intValue();
     return 10000*uses / n.degree();
   }
 
   /* int numberOfUses (Temp t)
-   *    retorna o n˙mero de vezes que um tempor·rio È usado.
+   *    retorna o n√∫mero de vezes que um tempor√°rio √© usado.
    */
   public int numberOfUses (Temp t) {
     return ((Integer)useOfTemps.get(t)).intValue();

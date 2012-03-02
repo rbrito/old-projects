@@ -6,10 +6,10 @@ import Set.*;
 /***********************************************************************************************************
  *   CLASSE TempSet                                                                                        *
  * ------------------------------------------------------------------------------------------------------- *
- *   Implementa um conjunto de tempor·rios.                                                                *
+ *   Implementa um conjunto de tempor√°rios.                                                                *
  *                                                                                                         *
- *   OBS: Esta implementaÁ„o supıe que cada tempor·rio tem um n˙mero, e cada n˙mero est· associado a um    *
- *        ˙nico tempor·rio. Assim, a partir de um n˙mero, È possÌvel saber qual o tempor·rio associado     *
+ *   OBS: Esta implementa√ß√£o sup√µe que cada tempor√°rio tem um n√∫mero, e cada n√∫mero est√° associado a um    *
+ *        √∫nico tempor√°rio. Assim, a partir de um n√∫mero, √© poss√≠vel saber qual o tempor√°rio associado     *
  *        e vice-versa.                                                                                    *
  ***********************************************************************************************************/
 
@@ -42,7 +42,7 @@ public class TempSet
   }
 
   /* construtor TempSet (TempList l)
-   *    cria um novo conjunto, a partir de uma lista de tempor·rios.
+   *    cria um novo conjunto, a partir de uma lista de tempor√°rios.
    */
   public TempSet (TempList l) {
     initialize(getRecommendedSize());
@@ -55,7 +55,7 @@ public class TempSet
   }
 
   /* construtor TempSet (OrderedSet set)
-   *    cria um novo conjunto, a partir de um conjunto OrderedSet de tempor·rios.
+   *    cria um novo conjunto, a partir de um conjunto OrderedSet de tempor√°rios.
    */
   public TempSet (OrderedSet set) {
     initialize(getRecommendedSize());
@@ -68,7 +68,7 @@ public class TempSet
   }
 
   /* construtor TempSet (TempSet set)
-   *    cria um novo conjunto, idÍntico ao conjunto fornecido.
+   *    cria um novo conjunto, id√™ntico ao conjunto fornecido.
    */
   public TempSet (TempSet set) {
     initialize(set.elements.length);
@@ -89,8 +89,8 @@ public class TempSet
   }
 
   /* int getRecommendedSize()
-   *    recomenda um tamanho para o conjunto (iÈ, 2 vezes o tamanho necess·rio para guardar todos os
-   *    tempor·rios criados atÈ o momento, para evitar que o conjunto precise ser redimensionado ao
+   *    recomenda um tamanho para o conjunto (i√©, 2 vezes o tamanho necess√°rio para guardar todos os
+   *    tempor√°rios criados at√© o momento, para evitar que o conjunto precise ser redimensionado ao
    *    acrescentar elementos.
    */
   private static int getRecommendedSize() {
@@ -98,7 +98,7 @@ public class TempSet
   }
 
   /* TempSet makeCopy()
-   *    cria uma cÛpia deste conjunto.
+   *    cria uma c√≥pia deste conjunto.
    */
   public TempSet makeCopy() {
     return new TempSet(this);
@@ -124,7 +124,7 @@ public class TempSet
   }
 
   /* boolean isEmpty()
-   *    verifica se este conjunto est· vazio.
+   *    verifica se este conjunto est√° vazio.
    */
   public boolean isEmpty() {
     for (int i=0; i<elements.length; i++) {
@@ -135,8 +135,8 @@ public class TempSet
   }
 
   /* boolean add (Temp t)
-   *    acrescenta este tempor·rio ao conjunto; retorna false se o elemento j· estava no conjunto, e true,
-   *    caso contr·rio.
+   *    acrescenta este tempor√°rio ao conjunto; retorna false se o elemento j√° estava no conjunto, e true,
+   *    caso contr√°rio.
    */
   public boolean add (Temp t) {
     if (t == null)
@@ -155,8 +155,8 @@ public class TempSet
   }
 
   /* boolean remove (Temp t)
-   *    remove o tempor·rio deste conjunto; retorna false se o elemento n„o estava presente no conjunto, e
-   *    true caso contr·rio.
+   *    remove o tempor√°rio deste conjunto; retorna false se o elemento n√£o estava presente no conjunto, e
+   *    true caso contr√°rio.
    */
   public boolean remove (Temp t) {
     if (t == null)
@@ -175,7 +175,7 @@ public class TempSet
   }
 
   /* boolean has (Temp t)
-   *    verifica se o tempor·rio pertence a este conjunto.
+   *    verifica se o tempor√°rio pertence a este conjunto.
    */
   public boolean has (Temp t) {
     if (t == null)
@@ -192,7 +192,7 @@ public class TempSet
   }
 
   /* int size()
-   *    devolve o n˙mero de elementos deste conjunto.
+   *    devolve o n√∫mero de elementos deste conjunto.
    */
   public int size() {
     int count = 0;
@@ -209,7 +209,7 @@ public class TempSet
   }
 
   /* TempSet union (TempSet set)
-   *    retorna o conjunto resultado a uni„o deste conjunto com o fornecido.
+   *    retorna o conjunto resultado a uni√£o deste conjunto com o fornecido.
    */
   public TempSet union (TempSet set) {
     if (set == null)
@@ -236,7 +236,7 @@ public class TempSet
   }
 
   /* TempSet intersection (TempSet set)
-   *    retorna o conjunto resultado a intersecÁ„o deste conjunto com o fornecido.
+   *    retorna o conjunto resultado a intersec√ß√£o deste conjunto com o fornecido.
    */
   public TempSet intersection (TempSet set) {
     if (set == null)
@@ -258,7 +258,7 @@ public class TempSet
   }
 
   /* TempSet difference (TempSet set)
-   *    retorna o conjunto resultado a diferenÁa entre este conjunto e o fornecido.
+   *    retorna o conjunto resultado a diferen√ßa entre este conjunto e o fornecido.
    */
   public TempSet difference (TempSet set) {
     if (set == null)
@@ -283,7 +283,7 @@ public class TempSet
   }
 
   /* boolean isEqualTo (TempSet set)
-   *    verifica se este conjunto e o fornecido tÍm os mesmos elementos.
+   *    verifica se este conjunto e o fornecido t√™m os mesmos elementos.
    */
   public boolean isEqualTo (TempSet set) {
     if (set == null)
@@ -314,7 +314,7 @@ public class TempSet
   }
 
   /* int getProx (int i)
-   *    devolve o n˙mero do prÛximo tempor·rio, a partir da posiÁ„o i; caso n„o existe, devolve -1.
+   *    devolve o n√∫mero do pr√≥ximo tempor√°rio, a partir da posi√ß√£o i; caso n√£o existe, devolve -1.
    */
   private int getProx (int i) {
     if (i<0)
@@ -327,7 +327,7 @@ public class TempSet
       int position = i%32;
       if ((elements[index] & (1<<(31-position))) != 0)
 	return i;
-      // como o elemento n„o foi encontrado, tenta acelerar a busca (˙til em conjunto com poucos elementos)
+      // como o elemento n√£o foi encontrado, tenta acelerar a busca (√∫til em conjunto com poucos elementos)
       if ((position == 0) && (elements[index] == 0)) {
 	i += 32;
 	continue;
@@ -345,7 +345,7 @@ public class TempSet
   }
 
   /* int getPrev (int i)
-   *    devolve o n˙mero do tempor·rio anterior, a partir da posiÁ„o i; caso n„o exista, devolve -1.
+   *    devolve o n√∫mero do tempor√°rio anterior, a partir da posi√ß√£o i; caso n√£o exista, devolve -1.
    */
   private int getPrev (int i) {
     int maxTemps = 32*elements.length;
@@ -358,7 +358,7 @@ public class TempSet
       int position = i%32;
       if ((elements[index] & (1<<(31-position))) != 0)
 	return i;
-      // como o elemento n„o foi encontrado, tenta acelerar a busca (˙til em conjunto com poucos elementos)
+      // como o elemento n√£o foi encontrado, tenta acelerar a busca (√∫til em conjunto com poucos elementos)
       if ((position == 31) && (elements[index] == 0)) {
 	i -= 32;
 	continue;
@@ -376,7 +376,7 @@ public class TempSet
   }
 
   /* TempSet getFirst()
-   *    retorna o primeiro tempor·rio deste conjunto (o de menor n˙mero).
+   *    retorna o primeiro tempor√°rio deste conjunto (o de menor n√∫mero).
    */
   public Temp getFirst() {
     int at = getProx(-1);
@@ -386,7 +386,7 @@ public class TempSet
   }
 
   /* TempSet getLast()
-   *    retorna o ˙ltimo tempor·rio deste conjunto (o de maior n˙mero).
+   *    retorna o √∫ltimo tempor√°rio deste conjunto (o de maior n√∫mero).
    */
   public Temp getLast() {
     int at = getPrev(elements.length*32);
@@ -396,7 +396,7 @@ public class TempSet
   }
 
   /* TempSet getPrev (Temp t)
-   *    retorna o tempor·rio anterior ao fornecido (o de n˙mero imediatamente menor ao fornecido).
+   *    retorna o tempor√°rio anterior ao fornecido (o de n√∫mero imediatamente menor ao fornecido).
    */
   public Temp getPrev (Temp t) {
     if (t==null)
@@ -408,7 +408,7 @@ public class TempSet
   }
 
   /* TempSet getNext (Temp t)
-   *    retorna o prÛximo tempor·rio ao fornecido (o de n˙mero imediatamente maior ao fornecido).
+   *    retorna o pr√≥ximo tempor√°rio ao fornecido (o de n√∫mero imediatamente maior ao fornecido).
    */
   public Temp getNext (Temp t) {
     if (t==null)
@@ -420,7 +420,7 @@ public class TempSet
   }
 
   /* String toString()
-   *    retorna uma String com a representaÁ„o deste conjunto (nome do conjunto + elementos).
+   *    retorna uma String com a representa√ß√£o deste conjunto (nome do conjunto + elementos).
    */
   public String toString() {
     String s = "";

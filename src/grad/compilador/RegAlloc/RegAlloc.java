@@ -12,43 +12,43 @@ import java.util.*;
 /***********************************************************************************************************
  *   CLASSE RegAlloc                                                                                       *
  * ------------------------------------------------------------------------------------------------------- *
- *   Realiza a alocaÁ„o de registradores para cada tempor·rio. Para isso, faz uma K-coloraÁ„o do grafo de  *
- *   interferÍncias (onde K È o n˙mero de registradores disponÌveis na m·quina destino).                   *
+ *   Realiza a aloca√ß√£o de registradores para cada tempor√°rio. Para isso, faz uma K-colora√ß√£o do grafo de  *
+ *   interfer√™ncias (onde K √© o n√∫mero de registradores dispon√≠veis na m√°quina destino).                   *
  ***********************************************************************************************************/
 
 public class RegAlloc implements TempMap
 {
-  private InterferenceGraph ig;   // grafo de interferÍncias
-  private int K;                  // n˙mero de registradores disponÌveis (para fazer K-coloraÁ„o)
+  private InterferenceGraph ig;   // grafo de interfer√™ncias
+  private int K;                  // n√∫mero de registradores dispon√≠veis (para fazer K-colora√ß√£o)
 
   private Frame frame;            // frame
-  private InstrList il;           // instruÁıes assembly sendo analisadas
+  private InstrList il;           // instru√ß√µes assembly sendo analisadas
 
-  // as seguintes estruturas de dados representar„o, atravÈs de conjuntos e tabelas de hash, o grafo de
-  // interferÍncias (de agora em diante, grafo refere-se a todos estas estruturas e grafo de interferÍncias
-  // ao grafo gerado durante a an·lise de liveness)
-  private Dictionary color;    // associa cada tempor·rio a uma cor (registrador)
-  private Dictionary alias;    // associa dois tempor·rios em MOVES que ser„o eliminados
-  private Dictionary degree;   // associa a cada tempor·rio do grafo o seu grau
+  // as seguintes estruturas de dados representar√£o, atrav√©s de conjuntos e tabelas de hash, o grafo de
+  // interfer√™ncias (de agora em diante, grafo refere-se a todos estas estruturas e grafo de interfer√™ncias
+  // ao grafo gerado durante a an√°lise de liveness)
+  private Dictionary color;    // associa cada tempor√°rio a uma cor (registrador)
+  private Dictionary alias;    // associa dois tempor√°rios em MOVES que ser√£o eliminados
+  private Dictionary degree;   // associa a cada tempor√°rio do grafo o seu grau
   private OrderedSet
-    selectStack;   // pilha de tempor·rios para futura coloraÁ„o
+    selectStack;   // pilha de tempor√°rios para futura colora√ß√£o
   private TempSet 
-    // estes 9 conjuntos s„o disjuntos
+    // estes 9 conjuntos s√£o disjuntos
     precolored, initial, simplifyWorklist, freezeWorklist, spillWorklist, spilledNodes, coalescedNodes,
     coloredNodes, selectStackCopy,
-    // estes outros conjuntos tambÈm guardam tempor·rios
+    // estes outros conjuntos tamb√©m guardam tempor√°rios
     newTemps, fetchesTemp, calleeSave, callerSave;
   private PairOrderedSet
-    // estes conjuntos s„o disjuntos e guardam MOVES
+    // estes conjuntos s√£o disjuntos e guardam MOVES
     coalescedMoves, constrainedMoves, frozenMoves, worklistMoves, activeMoves,
-    // este conjunto representa o grafo de interferÍncias
+    // este conjunto representa o grafo de interfer√™ncias
     adjSet;
   private Dictionary
-    moveList,      // associa cada tempor·rio ao conjunto de MOVES ao qual est· relacionado
-    adjList;       // associa cada tempor·rio ao conjunto de tempor·rios com os quais interfere
+    moveList,      // associa cada tempor√°rio ao conjunto de MOVES ao qual est√° relacionado
+    adjList;       // associa cada tempor√°rio ao conjunto de tempor√°rios com os quais interfere
 
   /* Strring tempMap (Temp t)
-   *    Procura o nome do registrador (cor) associado ao tempor·rio t.
+   *    Procura o nome do registrador (cor) associado ao tempor√°rio t.
    */
   public String tempMap (Temp t) {
     Temp c = (Temp) color.get(t);
@@ -58,17 +58,17 @@ public class RegAlloc implements TempMap
   }
 
   /* int Degree (Temp t)
-   *    obtÈm o grau do tempor·rio t.
+   *    obt√©m o grau do tempor√°rio t.
    */
   private int Degree (Temp t) {
     if (precolored.has(t))
-      return (1<<30);   // grau de tempor·rios prÈ-coloridos È considerado infinito
+      return (1<<30);   // grau de tempor√°rios pr√©-coloridos √© considerado infinito
     Integer i = (Integer)degree.get(t);
     return i.intValue();
   }
 
   /* PairOrderedSet moveList (Temp t)
-   *    obtÈm o conjunto de MOVES associados ao tempor·rio t.
+   *    obt√©m o conjunto de MOVES associados ao tempor√°rio t.
    */
   private PairOrderedSet moveList (Temp t) {
     PairOrderedSet set = (PairOrderedSet) moveList.get(t);
@@ -80,7 +80,7 @@ public class RegAlloc implements TempMap
   }
 
   /* TempSet moveList (Temp t)
-   *    obtÈm o conjunto de tempor·rios que interferem com o tempor·rio t.
+   *    obt√©m o conjunto de tempor√°rios que interferem com o tempor√°rio t.
    */
   private TempSet adjList (Temp t) {
     TempSet set = (TempSet) adjList.get(t);
@@ -92,14 +92,14 @@ public class RegAlloc implements TempMap
   }
 
   /* InstrList getInstructions()
-   *    retorna o conjunto de instruÁıes associado ‡ func„o analisada.
+   *    retorna o conjunto de instru√ß√µes associado √† func√£o analisada.
    */
   public InstrList getInstructions() {
     return il;
   }
 
   /* construtor RegAlloc (Frame f, InstrList il)
-   *    realiza a alocaÁ„o de registradores.
+   *    realiza a aloca√ß√£o de registradores.
    */
   public RegAlloc (Frame f, InstrList il) {
     frame=f;
@@ -135,7 +135,7 @@ public class RegAlloc implements TempMap
     color = new Hashtable();
 
 
-    // coloca os registradores no conjunto dos prÈ-coloridos
+    // coloca os registradores no conjunto dos pr√©-coloridos
     K = 0;
     for (TempList l=frame.registers(); l!=null; l=l.tail) {
       precolored.add(l.head);
@@ -145,7 +145,7 @@ public class RegAlloc implements TempMap
   }
 
   /* Main()
-   *    funÁ„o principal (recursiva atÈ que n„o sejam criados mais tempor·rio "spilled").
+   *    fun√ß√£o principal (recursiva at√© que n√£o sejam criados mais tempor√°rio "spilled").
    */
   private void Main() {
     Liveness();
@@ -166,24 +166,24 @@ public class RegAlloc implements TempMap
   }
 
   /* Liveness()
-   *    faz o "liveness" est·tico, criando o grafo de interferÍncias.
+   *    faz o "liveness" est√°tico, criando o grafo de interfer√™ncias.
    */
   private void Liveness() {
     ig = new Liveness (new AssemFlowGraph(frame.procEntryExit2(il)));
   }
 
   /* Build()
-   *    A partir do grafo de interferÍncias, cria os conjuntos que ser„o uma nova representar„o deste grafo,
-   *    com os quais o algoritmo de alocaÁ„o de registradores trabalhar·.
+   *    A partir do grafo de interfer√™ncias, cria os conjuntos que ser√£o uma nova representar√£o deste grafo,
+   *    com os quais o algoritmo de aloca√ß√£o de registradores trabalhar√°.
    */
   private void Build() {
-    // cria os conjuntos que guardar„o os MOVES
+    // cria os conjuntos que guardar√£o os MOVES
     coalescedMoves = new PairOrderedSet("coalescedMoves");
     constrainedMoves = new PairOrderedSet("constrainedMoves");
     frozenMoves = new PairOrderedSet("frozenMoves");
     worklistMoves = new PairOrderedSet("worklistMoves"); worklistMoves.showErro=false;
     activeMoves = new PairOrderedSet("activesMoves");
-    // cria os conjuntos que representam o grafo de interferÍncias
+    // cria os conjuntos que representam o grafo de interfer√™ncias
     adjSet = new PairOrderedSet("adjSet");
     adjList = new Hashtable();
     moveList = new Hashtable();
@@ -197,12 +197,12 @@ public class RegAlloc implements TempMap
       moveList(dst).add(dst,src);
       worklistMoves.add(dst,src);
     }
-    // inicializa o grau dos tempor·rios
+    // inicializa o grau dos tempor√°rios
     for (NodeList nl=ig.nodes(); nl!=null; nl=nl.tail) {
       Temp u = ig.gtemp(nl.head);
       degree.put(u,new Integer(0));
     }
-    // coloca cada tempor·rio no devido conjunto e cria os conjuntos representando as interferÍncias.
+    // coloca cada tempor√°rio no devido conjunto e cria os conjuntos representando as interfer√™ncias.
     for (NodeList nl=ig.nodes(); nl!=null; nl=nl.tail) {
       Temp u = ig.gtemp(nl.head);
       if (!precolored.has(u))
@@ -216,7 +216,7 @@ public class RegAlloc implements TempMap
   }
 
   /* AddEdge (Temp u, Temp v)
-   *    cria uma aresta de interferÍncia entre os tempor·rios u e v.
+   *    cria uma aresta de interfer√™ncia entre os tempor√°rios u e v.
    */
   private void AddEdge (Temp u, Temp v) {
     if ( (!adjSet.has(u,v)) && (u != v) ) {
@@ -234,10 +234,10 @@ public class RegAlloc implements TempMap
   }
 
   /* MakeWorklist()
-   *    transfere cada tempor·rio do conjunto initial para o conjunto:
+   *    transfere cada tempor√°rio do conjunto initial para o conjunto:
    *    - spillWorklist (se for de grau significante)
-   *    - freezeWorklist (se for de grau n„o-significante, associado a MOVE)
-   *    - simplifyWorklist (se for de grau n„o-significante, n„o associado a MOVE)
+   *    - freezeWorklist (se for de grau n√£o-significante, associado a MOVE)
+   *    - simplifyWorklist (se for de grau n√£o-significante, n√£o associado a MOVE)
    */
   private void MakeWorklist() {
     for (Temp n=(Temp)initial.getFirst(); n!=null; n=(Temp)initial.getNext(n)) {
@@ -252,14 +252,14 @@ public class RegAlloc implements TempMap
   }
 
   /* TempSet Adjacent (Temp n)
-   *    retorna o conjunto dos tempor·rios que ainda interferem com o tempor·rio n.
+   *    retorna o conjunto dos tempor√°rios que ainda interferem com o tempor√°rio n.
    */
   private TempSet Adjacent (Temp n) {
     return adjList(n).difference(selectStackCopy).difference(coalescedNodes);
   }
 
   /* PairOrderedSet NodeMoves (Temp n)
-   *    retorna o conjunto dos MOVES associados ao tempor·rio n.
+   *    retorna o conjunto dos MOVES associados ao tempor√°rio n.
    */
   private PairOrderedSet NodeMoves (Temp n) {
     PairOrderedSet set = moveList(n).makeCopy();
@@ -268,15 +268,15 @@ public class RegAlloc implements TempMap
   }
 
   /* boolean MoveRelated (Temp n)
-   *    verifica se o tempor·rio n est· associado a algum MOVE.
+   *    verifica se o tempor√°rio n est√° associado a algum MOVE.
    */
   private boolean MoveRelated (Temp n) {
     return !(NodeMoves(n).isEmpty());
   }
 
   /* Simplify()
-   *    escolhe um dos tempor·rios de simplifyWorklist, remove-o do grafo e o coloca na pilha para futura
-   *    coloraÁ„o.
+   *    escolhe um dos tempor√°rios de simplifyWorklist, remove-o do grafo e o coloca na pilha para futura
+   *    colora√ß√£o.
    */
   private void Simplify() {
     Temp n=(Temp)simplifyWorklist.getFirst();
@@ -289,7 +289,7 @@ public class RegAlloc implements TempMap
   }
     
   /* DecrementDegree()
-   *    apÛs remover um tempor·rio do grafo, atualiza seus vizinhos.
+   *    ap√≥s remover um tempor√°rio do grafo, atualiza seus vizinhos.
    */
   private void DecrementDegree (Temp m) {
     int d = Degree(m);
@@ -307,7 +307,7 @@ public class RegAlloc implements TempMap
   }
 
   /* EnableMoves (TempSet nodes)
-   *    habilita os MOVES associados aos nÛs presentes no conjunto nodes.
+   *    habilita os MOVES associados aos n√≥s presentes no conjunto nodes.
    */
   private void EnableMoves (TempSet nodes) {
     for (Temp n=(Temp)nodes.getFirst(); n!=null; n=(Temp)nodes.getNext(n)) {
@@ -322,8 +322,8 @@ public class RegAlloc implements TempMap
   }
 
   /* Coalesce()
-   *    j· que h· MOVES em worklistMoves, escolhe um deles e tenta eliminar o MOVE fazendo com que o
-   *    tempor·rio destino fique no mesmo registrador que o tempor·rio origem.
+   *    j√° que h√° MOVES em worklistMoves, escolhe um deles e tenta eliminar o MOVE fazendo com que o
+   *    tempor√°rio destino fique no mesmo registrador que o tempor√°rio origem.
    */
   private void Coalesce() {
     Pair m = worklistMoves.getFirst();
@@ -334,30 +334,30 @@ public class RegAlloc implements TempMap
                       else { u = x;  v = y; }
     worklistMoves.remove(m.x,m.y);
     if (u == v) {
-      // tempor·rio origem e destino s„o o mesmo
+      // tempor√°rio origem e destino s√£o o mesmo
       coalescedMoves.add(m.x,m.y);
       AddWorkList(u);
     }
     else if ( precolored.has(v) || adjSet.has(u,v) ) {
-      // este MOVE n„o pode ser eliminado: os tempor·rios do MOVE interferem
+      // este MOVE n√£o pode ser eliminado: os tempor√°rios do MOVE interferem
       constrainedMoves.add(m.x,m.y);
       AddWorkList(u);
       AddWorkList(v);
     }
     else if ( ( precolored.has(u) && AdjacentOK(v,u) ) ||
 	      ( !precolored.has(u) && Conservative(Adjacent(u).union(Adjacent(v))) ) ) {
-      // critÈrio de George ou Briggs verificado e satisfeito
+      // crit√©rio de George ou Briggs verificado e satisfeito
       coalescedMoves.add(m.x,m.y);
       Combine(u,v);
       AddWorkList(u);
     }
     else
-      // este MOVE ser· deixado para depois
+      // este MOVE ser√° deixado para depois
       activeMoves.add(m.x,m.y);
   }
 
   /* AddWorklist (Temp u)
-   *    o tempor·rio u ser· marcado para simplificar (n„o ser· mais considerado para "coalesce")
+   *    o tempor√°rio u ser√° marcado para simplificar (n√£o ser√° mais considerado para "coalesce")
    */
   private void AddWorkList (Temp u) {
     if ( !precolored.has(u) && !MoveRelated(u) && (Degree(u) < K) ) {
@@ -367,8 +367,8 @@ public class RegAlloc implements TempMap
   }
 
   /* AdjacentOK (Temp v, Temp r)
-   *    verifica se o critÈrio de George È satisfeito, iÈ, se para cada vizinho z de v, z j· interefere com
-   *    r ou z È de grau n„o-significante.
+   *    verifica se o crit√©rio de George √© satisfeito, i√©, se para cada vizinho z de v, z j√° interefere com
+   *    r ou z √© de grau n√£o-significante.
    */
   private boolean AdjacentOK (Temp v, Temp r) {
     boolean ok = true;
@@ -379,8 +379,8 @@ public class RegAlloc implements TempMap
   }
 
   /* Conservative (TempSet set)
-   *    verifica se o critÈrio de Briggs È satisfeito, iÈ, a partir de um conjunto com os vizinhos de dois
-   *    tempor·rios de um MOVE que ser· eliminado, o conjunto possui menos do que K tempor·rios de grau
+   *    verifica se o crit√©rio de Briggs √© satisfeito, i√©, a partir de um conjunto com os vizinhos de dois
+   *    tempor√°rios de um MOVE que ser√° eliminado, o conjunto possui menos do que K tempor√°rios de grau
    *    significante.
    */
   private boolean Conservative (TempSet set) {
@@ -393,8 +393,8 @@ public class RegAlloc implements TempMap
   }
     
   /* Temp GetAlias (Temp n)
-   *    retorna o alias de um tempor·rio, iÈ, se o tempor·rio pertencia a um MOVE que foi eliminado, retorna
-   *    o outro tempor·rio do MOVE.
+   *    retorna o alias de um tempor√°rio, i√©, se o tempor√°rio pertencia a um MOVE que foi eliminado, retorna
+   *    o outro tempor√°rio do MOVE.
    */
   private Temp GetAlias (Temp n) {
     if (coalescedNodes.has(n))
@@ -403,7 +403,7 @@ public class RegAlloc implements TempMap
   }
 
   /* Combine (Temp u, Temp v)
-   *    realiza os preparativos para eliminar o MOVE ao qual dois tempor·rios u e v est„o associados.
+   *    realiza os preparativos para eliminar o MOVE ao qual dois tempor√°rios u e v est√£o associados.
    */
   private void Combine (Temp u, Temp v) {
     if (freezeWorklist.has(v))
@@ -429,8 +429,8 @@ public class RegAlloc implements TempMap
   }
 
   /* Freeze()
-   *    dado que n„o h· mais tempor·rios para simplificar nem MOVES que podem ser eliminados, desiste de
-   *    eliminar MOVES associado a algum tempor·rio para tentar fazer futuras simplificaÁıes.
+   *    dado que n√£o h√° mais tempor√°rios para simplificar nem MOVES que podem ser eliminados, desiste de
+   *    eliminar MOVES associado a algum tempor√°rio para tentar fazer futuras simplifica√ß√µes.
    */
   private void Freeze() {
     Temp u = (Temp) freezeWorklist.getFirst();
@@ -440,7 +440,7 @@ public class RegAlloc implements TempMap
   }
 
   /* FreezeMoves (Temp u)
-   *    desiste de eliminar MOVES associado ao tempor·rio u.
+   *    desiste de eliminar MOVES associado ao tempor√°rio u.
    */
   private void FreezeMoves (Temp u) {
     PairOrderedSet nm = (PairOrderedSet) NodeMoves(u);
@@ -461,16 +461,16 @@ public class RegAlloc implements TempMap
   }
 
   /* SelectSpill()
-   *    Como n„o puderam ser feitas simplificaÁıes, nem eliminaÁıes de MOVES, nem congelamento de MOVES,
-   *    escolhe um tempor·rio para um possÌvel "spill" (lanÁamento no frame) para poder continuar fazendo
-   *    simplificaÁıes.
+   *    Como n√£o puderam ser feitas simplifica√ß√µes, nem elimina√ß√µes de MOVES, nem congelamento de MOVES,
+   *    escolhe um tempor√°rio para um poss√≠vel "spill" (lan√ßamento no frame) para poder continuar fazendo
+   *    simplifica√ß√µes.
    */
   private void SelectSpill() {
-    // evita escolher os tempor·rios que foram criados para fazer spill de outros tempor·rios
+    // evita escolher os tempor√°rios que foram criados para fazer spill de outros tempor√°rios
     TempSet select = spillWorklist.difference(fetchesTemp);
     if (select.isEmpty())
       select = spillWorklist;
-    // escolhe o tempor·rio cujo custo de spill seja mÌnimo.
+    // escolhe o tempor√°rio cujo custo de spill seja m√≠nimo.
     Temp m = null;
     int cost = 1<<30;
     for (Temp t=(Temp)select.getFirst(); t!=null; t=(Temp)select.getNext(t)) {
@@ -486,16 +486,16 @@ public class RegAlloc implements TempMap
   }
 
   /* AssignColors()
-   *    uma vez removidos todos os nÛs e colocados na pilha, remove cada tempor·rio da pilha a medida que
-   *    lhe atribui uma cor; se n„o houver cor, ent„o joga-o para o frame ("actual spill").
+   *    uma vez removidos todos os n√≥s e colocados na pilha, remove cada tempor√°rio da pilha a medida que
+   *    lhe atribui uma cor; se n√£o houver cor, ent√£o joga-o para o frame ("actual spill").
    */
   private void AssignColors() {
     while (!selectStack.isEmpty()) {
-      // remove um tempor·rio da pilha
+      // remove um tempor√°rio da pilha
       Temp n = (Temp) selectStack.getFirst();
       selectStack.remove(n);
       selectStackCopy.remove(n);
-      // verifica quais as cores que n„o poder„o ser usadas para o tempor·rio
+      // verifica quais as cores que n√£o poder√£o ser usadas para o tempor√°rio
       TempSet okColors = precolored.makeCopy();
       TempSet adj = adjList(n);
       for (Temp w=(Temp)adj.getFirst(); w!=null; w=(Temp)adj.getNext(w)) {
@@ -503,14 +503,14 @@ public class RegAlloc implements TempMap
 	if (coloredNodes.has(aliasW) || precolored.has(aliasW))
 	  okColors.remove((Temp)color.get(aliasW));
       }
-      // verifica se sobrou alguma cor para o tempor·rio
+      // verifica se sobrou alguma cor para o tempor√°rio
       if (okColors.isEmpty())
-	spilledNodes.add(n);     // o tempor·rio vai para o frame
+	spilledNodes.add(n);     // o tempor√°rio vai para o frame
       else {
-	// escolhe uma das cores para o tempor·rio
+	// escolhe uma das cores para o tempor√°rio
 	Temp c;
 	coloredNodes.add(n);
-	// tenta escolher um registrador (cor) que n„o seja callee-save
+	// tenta escolher um registrador (cor) que n√£o seja callee-save
 	TempSet noCalleeSave = okColors.difference(calleeSave);
 	if (!noCalleeSave.isEmpty())
 	  c = (Temp)noCalleeSave.getFirst();
@@ -524,15 +524,15 @@ public class RegAlloc implements TempMap
   }
 
   /* RewriteProgram()
-   *    reescreve o programa, gerando as instruÁıes para spill se houver tempor·rio marcados para spill.
+   *    reescreve o programa, gerando as instru√ß√µes para spill se houver tempor√°rio marcados para spill.
    */
   private void RewriteProgram() {
-    // o hashtable a seguir ser· usado para associar tempor·rios que n„o poder„o ficar em registrador
+    // o hashtable a seguir ser√° usado para associar tempor√°rios que n√£o poder√£o ficar em registrador
     // ("spilled") aos lugares no frame reservados para eles
     Dictionary spilledLocations = new Hashtable();
     for (Temp s=(Temp)spilledNodes.getFirst(); s!=null; s=(Temp)spilledNodes.getNext(s))
       spilledLocations.put(s, frame.allocLocal(true));
-    // comeÁa o processo de reescritura do programa
+    // come√ßa o processo de reescritura do programa
     Assem.InstrList rewrittenProgram = null;
     Assem.InstrList last = null;
     rewrittenProgram = null;
@@ -555,7 +555,7 @@ public class RegAlloc implements TempMap
   }
 
   /* InstrList replaceSpilledTemps (Instr i, Dictionary spilledLocations)
-   *    gera as instruÁıes necess·rio para realizar spill se houver tempor·rios nesta instruÁ„o marcados
+   *    gera as instru√ß√µes necess√°rio para realizar spill se houver tempor√°rios nesta instru√ß√£o marcados
    *    para spill.
    */
   private InstrList replaceSpilledTemps (Instr i, Dictionary spilledLocations) {
@@ -563,8 +563,8 @@ public class RegAlloc implements TempMap
     Assem.InstrList first = null;
     Assem.InstrList last = null;
 
-    // substitui cada tempor·rio t usado na instruÁ„o i marcado para "spill" por um novo tempor·rio c,
-    // gerando uma instruÁ„o  c <= M[loc]  antes da instruÁ„o i
+    // substitui cada tempor√°rio t usado na instru√ß√£o i marcado para "spill" por um novo tempor√°rio c,
+    // gerando uma instru√ß√£o  c <= M[loc]  antes da instru√ß√£o i
     PairOrderedSet frameToTemp = new PairOrderedSet();
     for (TempList use=i.use(); use!=null; use=use.tail) {
       if (spilledNodes.has(use.head)) {
@@ -572,9 +572,9 @@ public class RegAlloc implements TempMap
 	OrderedSet auxSet = frameToTemp.get(frameAddress);
 	Temp newTemp;
 	boolean createFetchInstr = false;
-	// verifica se a instruÁ„o c <= M[loc] j· foi gerada antes
+	// verifica se a instru√ß√£o c <= M[loc] j√° foi gerada antes
 	if (auxSet.isEmpty()) {
-	  // c <= M[loc] n„o foi gerado antes, È necess·rio ger·-la
+	  // c <= M[loc] n√£o foi gerado antes, √© necess√°rio ger√°-la
 	  newTemp = new Temp();
 	  fetchesTemp.add(newTemp);
 	  newTemps.add(newTemp);
@@ -582,17 +582,17 @@ public class RegAlloc implements TempMap
 	  createFetchInstr = true;
 	}
 	else
-	  // aproveita o tempor·rio c da instruÁ„o c <= M[loc] gerada anteriormente
+	  // aproveita o tempor√°rio c da instru√ß√£o c <= M[loc] gerada anteriormente
 	  newTemp = (Temp)auxSet.getFirst();
-	// substitui o tempor·rio "spilled" pelo novo que receber· o valor do frame
+	// substitui o tempor√°rio "spilled" pelo novo que receber√° o valor do frame
 	if (i instanceof Assem.MOVE)
 	  ((Assem.MOVE)i).src = newTemp;
 	else
 	  use.head = newTemp;
-	// verifica se a instruÁ„o c <= M[loc] foi marcada para ser gerada
+	// verifica se a instru√ß√£o c <= M[loc] foi marcada para ser gerada
 	if (!createFetchInstr)
 	  continue;
-	// gera as instruÁıes para ler o valor armazenado no frame e coloc·-lo no novo tempor·rio
+	// gera as instru√ß√µes para ler o valor armazenado no frame e coloc√°-lo no novo tempor√°rio
 	Tree.Stm fetchStm = new Tree.MOVE(new Tree.TEMP(newTemp),
 					  frameAddress.exp(new Tree.TEMP(frame.FP())));
 	Assem.InstrList fetchInstr = frame.codegen(fetchStm);
@@ -603,14 +603,14 @@ public class RegAlloc implements TempMap
 	while (last.tail != null) last=last.tail;
       }
     }
-    // acrescenta a instruÁ„o assembly i, apÛs todas as geradas para ler valores do frame de tempor·rios 
+    // acrescenta a instru√ß√£o assembly i, ap√≥s todas as geradas para ler valores do frame de tempor√°rios 
     // "spilled"
     if (last == null)
       last = first = new Assem.InstrList(i,null);
     else
       last = last.tail = new Assem.InstrList(i,null);
-    // substitui cada tempor·rio t definido na instruÁ„o i e marcado para "spill" por um novo tempor·rio c,
-    // gerando uma instruÁ„o  M[loc] <= c  apÛs a instruÁ„o i
+    // substitui cada tempor√°rio t definido na instru√ß√£o i e marcado para "spill" por um novo tempor√°rio c,
+    // gerando uma instru√ß√£o  M[loc] <= c  ap√≥s a instru√ß√£o i
     for (TempList def=i.def(); def!=null; def=def.tail) {
       if (spilledNodes.has(def.head)) {
 	Access frameAddress = (Access) spilledLocations.get(def.head);
@@ -634,13 +634,13 @@ public class RegAlloc implements TempMap
   }
 
   /* boolean RemoveUselessInstructions()
-   *    tenta eliminar instruÁıes in˙teis, como MOVE a,a ou JUMP para label que vem logo a seguir;
-   *    retorna true se conseguiu eliminar alguma instruÁ„o, false caso contr·rio.
+   *    tenta eliminar instru√ß√µes in√∫teis, como MOVE a,a ou JUMP para label que vem logo a seguir;
+   *    retorna true se conseguiu eliminar alguma instru√ß√£o, false caso contr√°rio.
    */
   private boolean RemoveUselessInstructions() {
     boolean removedInstruction = false;
     boolean changed;
-    do {   // enquanto houver a possibilidade de eliminar alguma instruÁ„o
+    do {   // enquanto houver a possibilidade de eliminar alguma instru√ß√£o
       changed = false;
       InstrList rewrittenProgram = null;
       InstrList last = null;
@@ -656,7 +656,7 @@ public class RegAlloc implements TempMap
 	}
 	else if (p.head instanceof OPER && ((OPER)p.head).def() == null && ((OPER)p.head).jumps() != null &&
 		 p.tail != null && p.tail.head instanceof LABEL) {
-	  // desvio seguido de um rÛtulo; verifica se o desvio È feito para o rÛtulo a seguir; caso
+	  // desvio seguido de um r√≥tulo; verifica se o desvio √© feito para o r√≥tulo a seguir; caso
 	  // afirmativo, apaga este desvio
 	  LabelList ll = ((OPER)p.head).jumps().labels;
 	  Label next = ((LABEL)p.tail.head).label;
@@ -683,8 +683,8 @@ public class RegAlloc implements TempMap
   }
 
   /* boolean RemoveUnusedLabels()
-   *    tenta remover labels que n„o s„o usados e substitui v·rias declaraÁıes de labels contÌguas por uma
-   *    sÛ.
+   *    tenta remover labels que n√£o s√£o usados e substitui v√°rias declara√ß√µes de labels cont√≠guas por uma
+   *    s√≥.
    */
   private boolean RemoveUnusedLabels() {
     boolean removedLabel = false;
@@ -692,7 +692,7 @@ public class RegAlloc implements TempMap
     Dictionary declaredLabel = new Hashtable();
     OrderedSet declaredLabels = new OrderedSet();
     OrderedSet lastLabelSet = null;
-    // passo 1: coleta informaÁıes sobre todos os rÛtulos no programa
+    // passo 1: coleta informa√ß√µes sobre todos os r√≥tulos no programa
     for (InstrList p=il; p!= null; p=p.tail) {
       if (p.head instanceof Assem.LABEL) {
 	Label label = ((Assem.LABEL)p.head).label;
@@ -716,7 +716,7 @@ public class RegAlloc implements TempMap
 	}
       }
     }
-    // passo 2: caso haja v·rias declaraÁıes de labels contÌguas, escolhe um dos rÛtulos como representante
+    // passo 2: caso haja v√°rias declara√ß√µes de labels cont√≠guas, escolhe um dos r√≥tulos como representante
     Label nextLabel;
     for (Label x=(Label)declaredLabels.getFirst(); x != null; x = nextLabel) {
       nextLabel = (Label)declaredLabels.getNext(x);
@@ -765,10 +765,10 @@ public class RegAlloc implements TempMap
   }
 
 
-  /* ======= FUN«’ES DE DEBUG (PARA VERIFICAR ERROS NA IMPLEMENTA«√O DA ALOCA«√O DE REGISTRADORES) ======= */
+  /* ======= FUN√á√ïES DE DEBUG (PARA VERIFICAR ERROS NA IMPLEMENTA√á√ÉO DA ALOCA√á√ÉO DE REGISTRADORES) ======= */
 
   /* TestInvariants()
-   *    verifica se as 4 afirmativas (p·g.254 do livro) s„o satisfeitas.
+   *    verifica se as 4 afirmativas (p√°g.254 do livro) s√£o satisfeitas.
    */
   private void TestInvariants() {
     //System.out.println("Testing invariants:");
@@ -814,12 +814,12 @@ public class RegAlloc implements TempMap
       //System.out.println(test);
       tudoOk = tudoOk & test;
     }
-    if (!tudoOk) System.out.println("ERRO: INVARIANTES N√O PRESERVADAS");
+    if (!tudoOk) System.out.println("ERRO: INVARIANTES N√ÉO PRESERVADAS");
 
   }
 
   /* showProgram()
-   *    mostra as instruÁıes assembly.
+   *    mostra as instru√ß√µes assembly.
    */
   private void showProgram() {
     TempMap tempMap = new CombineMap (this, new DefaultMap());
@@ -841,7 +841,7 @@ public class RegAlloc implements TempMap
   }
 
   /* LookFor (Temp n)
-   *    procura o tempor·rio n entre os conjuntos presentes em sets.
+   *    procura o tempor√°rio n entre os conjuntos presentes em sets.
    */
   private void LookFor (Temp n) {
     TempSet[] sets={precolored,initial,simplifyWorklist,freezeWorklist,spillWorklist,spilledNodes,

@@ -3,7 +3,7 @@ package FindEscape;
 /***********************************************************************************************************
  *   CLASSE Escape                                                                                         *
  * ------------------------------------------------------------------------------------------------------- *
- *   Guarda informaÁıes sobre onde as vari·veis foram declaradas e sobre se escapam ou n„o.                *
+ *   Guarda informa√ß√µes sobre onde as vari√°veis foram declaradas e sobre se escapam ou n√£o.                *
  ***********************************************************************************************************/
 
 abstract class Escape
@@ -16,8 +16,8 @@ abstract class Escape
 /***********************************************************************************************************
  *   CLASSE FormalEscape                                                                                   *
  * ------------------------------------------------------------------------------------------------------- *
- *   Guarda informaÁıes sobre em que nÌvel os par‚metros de uma funÁ„o foram declarados e se escapam ou    *
- *   n„o.                                                                                                  *
+ *   Guarda informa√ß√µes sobre em que n√≠vel os par√¢metros de uma fun√ß√£o foram declarados e se escapam ou    *
+ *   n√£o.                                                                                                  *
  ***********************************************************************************************************/
 
 class FormalEscape extends Escape
@@ -34,10 +34,10 @@ class FormalEscape extends Escape
 /***********************************************************************************************************
  *   CLASSE FormalEscape                                                                                   *
  * ------------------------------------------------------------------------------------------------------- *
- *   Guarda informaÁıes sobre em que nÌvel uma vari·vel foi declarada e se escapa ou n„o.                  *
+ *   Guarda informa√ß√µes sobre em que n√≠vel uma vari√°vel foi declarada e se escapa ou n√£o.                  *
  ***********************************************************************************************************/
 
-// Classe VarEscape: armazena uma vari·vel e a profundidade em que foi declarada.
+// Classe VarEscape: armazena uma vari√°vel e a profundidade em que foi declarada.
 class VarEscape extends Escape
 {
   Absyn.VarDec vd;
@@ -52,17 +52,17 @@ class VarEscape extends Escape
 /***********************************************************************************************************
  *   CLASSE FindEscape                                                                                     *
  * ------------------------------------------------------------------------------------------------------- *
- *   Percorre a ·rvore sint·tica abstrata determinando quais as vari·veis e par‚metros que escapam e       *
- *   quais n„o.                                                                                            *
+ *   Percorre a √°rvore sint√°tica abstrata determinando quais as vari√°veis e par√¢metros que escapam e       *
+ *   quais n√£o.                                                                                            *
  ***********************************************************************************************************/
 
 public class FindEscape
 {
-  Symbol.Table escEnv = new Symbol.Table();      // tabela de sÌmbolos
+  Symbol.Table escEnv = new Symbol.Table();      // tabela de s√≠mbolos
 
   public FindEscape (Absyn.Exp e) { traverseExp(0,e); }
 
-  // traverseVar: trata vari·veis.
+  // traverseVar: trata vari√°veis.
   void traverseVar (int depth, Absyn.Var v) {
     if (v instanceof Absyn.SimpleVar)
       traverseVar (depth, (Absyn.SimpleVar) v);
@@ -75,10 +75,10 @@ public class FindEscape
 
   void traverseVar (int depth, Absyn.SimpleVar v) {
     Escape escape = (Escape) escEnv.get(v.name);
-    // verifica se esta vari·vel ou par‚metro formal est· sendo usada em um nÌvel mais interno ao da sua
-    // declaraÁ„o
+    // verifica se esta vari√°vel ou par√¢metro formal est√° sendo usada em um n√≠vel mais interno ao da sua
+    // declara√ß√£o
     if ((escape != null) && (depth > escape.depth))
-      escape.setEscape();  // esta vari·vel/par‚metro escapa (precisar· ficar no frame, n„o em registrador)
+      escape.setEscape();  // esta vari√°vel/par√¢metro escapa (precisar√° ficar no frame, n√£o em registrador)
   }
 
   void traverseVar (int depth, Absyn.FieldVar v) {
@@ -89,14 +89,14 @@ public class FindEscape
     traverseVar (depth, v.var);
   }
 
-  // traverseExp: trata expressıes.
+  // traverseExp: trata express√µes.
   void traverseExp (int depth, Absyn.Exp e) {
     if ( (e instanceof Absyn.NilExp) ||
 	 (e instanceof Absyn.IntExp) ||
 	 (e instanceof Absyn.StringExp) ||
 	 (e instanceof Absyn.RecordExp) ||
 	 (e instanceof Absyn.BreakExp) )
-	// estes n„o trabalham com vari·veis e por isso n„o ser„o analisados
+	// estes n√£o trabalham com vari√°veis e por isso n√£o ser√£o analisados
       return;
     if (e instanceof Absyn.VarExp)
       traverseExp (depth, (Absyn.VarExp) e);
@@ -178,7 +178,7 @@ public class FindEscape
     traverseExp (depth, e.init);
   }
 
-  // traverseDec: trata declaraÁıes.
+  // traverseDec: trata declara√ß√µes.
   void traverseDec (int depth, Absyn.Dec d) {
     if (d instanceof Absyn.VarDec)
       traverseDec (depth, (Absyn.VarDec) d);
@@ -189,7 +189,7 @@ public class FindEscape
   }
 
   void traverseDec (int depth, Absyn.VarDec d) {
-    // declara uma vari·vel e armazena a profundidade e a funÁ„o dentro da qual foi declarada
+    // declara uma vari√°vel e armazena a profundidade e a fun√ß√£o dentro da qual foi declarada
     escEnv.put (d.name, new VarEscape(depth,d));
   }
 
@@ -197,7 +197,7 @@ public class FindEscape
     for (Absyn.FunctionDec dd=d; dd!=null; dd=dd.next) {
       escEnv.beginScope();
       for (Absyn.FieldList p=dd.params; p!=null; p=p.tail)
-        // declara um par‚metro formal e armazena a profundidade em que foi declarado
+        // declara um par√¢metro formal e armazena a profundidade em que foi declarado
 	escEnv.put (p.name, new FormalEscape(depth+1,p));
       traverseExp (depth+1, dd.body);
       escEnv.endScope();

@@ -10,17 +10,17 @@ import List.*;
  * ------------------------------------------------------------------------------------------------------- *
  *   Implementa um conjunto formado por pares.                                                             *
  *                                                                                                         *
- *   OBS: este conjunto pode comportar-se como uma fila ou pilha, se forem usados os mÈtodos addFirst      *
- *        e addLast ao invÈs do mÈtodo add.                                                                *
+ *   OBS: este conjunto pode comportar-se como uma fila ou pilha, se forem usados os m√©todos addFirst      *
+ *        e addLast ao inv√©s do m√©todo add.                                                                *
  ***********************************************************************************************************/
 
 public class PairOrderedSet
 {
-  /* Detalhes sobre a implementaÁ„o:
-   *    Ser„o usadas duas estruturas: uma lista duplamente ligada e uma tabela de hash. Na tabela de hash,
-   *    cada elemento elemento x do par (x,y) estar· associado a um conjunto e a uma tabela de hash:
-   *       - o conjunto estar· formado pelos elementos y com os quais forma um par;
-   *       - a tabela de hash dir· em que posiÁ„o o par (x,y) est· na lista duplamente ligada.
+  /* Detalhes sobre a implementa√ß√£o:
+   *    Ser√£o usadas duas estruturas: uma lista duplamente ligada e uma tabela de hash. Na tabela de hash,
+   *    cada elemento elemento x do par (x,y) estar√° associado a um conjunto e a uma tabela de hash:
+   *       - o conjunto estar√° formado pelos elementos y com os quais forma um par;
+   *       - a tabela de hash dir√° em que posi√ß√£o o par (x,y) est√° na lista duplamente ligada.
    */
   private DoubleLinkedList first, last;
   Dictionary dictionary;
@@ -64,17 +64,17 @@ public class PairOrderedSet
   }
 
   /* boolean isEmpty()
-   *    verifica se o conjunto est· vazio.
+   *    verifica se o conjunto est√° vazio.
    */
   public boolean isEmpty() {return (size==0);}
 
   /* int size()
-   *    retorna o n˙mero de elementos deste conjunto.
+   *    retorna o n√∫mero de elementos deste conjunto.
    */
   public int size() {return size;}
 
   /* PairOrderedSet makeCopy()
-   *    retorna uma cÛpia deste conjunto.
+   *    retorna uma c√≥pia deste conjunto.
    */
   public PairOrderedSet makeCopy() {
     PairOrderedSet set = new PairOrderedSet();
@@ -91,8 +91,8 @@ public class PairOrderedSet
   public boolean add (Object x, Object y) {return addLast(x,y);}
 
   /* boolean addFirst (Object x, Object y)
-   *    acrescenta um par (x,y) no inÌcio do conjunto; retorna false se o elemento pertence a este conjunto,
-   *    e true caso contr·rio.
+   *    acrescenta um par (x,y) no in√≠cio do conjunto; retorna false se o elemento pertence a este conjunto,
+   *    e true caso contr√°rio.
    */
   public boolean addFirst (Object x, Object y) {
     if ((show) && (name!=null)) System.out.println("Inserindo ("+x+","+y+") em "+this);
@@ -100,7 +100,7 @@ public class PairOrderedSet
       return false;
     Pair P = (Pair) dictionary.get(x);
     if (P != null && ((OrderedSet)P.x).has(y)) {
-      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") j· est· em "+this);
+      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") j√° est√° em "+this);
       return false;
     }
     else if (P == null) {
@@ -124,7 +124,7 @@ public class PairOrderedSet
 
   /* boolean addLast (Object x, Object y)
    *    acrescenta um par (x,y) ao conjunto, no final; retorna false se o elemento pertence a este conjunto,
-   *    e true caso contr·rio.
+   *    e true caso contr√°rio.
    */
   public boolean addLast (Object x, Object y) {
     if (show && name!=null) System.out.println("Inserindo ("+x+","+y+") em "+this);
@@ -132,7 +132,7 @@ public class PairOrderedSet
       return false;
     Pair P = (Pair) dictionary.get(x);
     if (P != null && ((OrderedSet)P.x).has(y)) {
-      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") j· est· em "+this);
+      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") j√° est√° em "+this);
       return false;
     }
     else if (P == null) {
@@ -155,8 +155,8 @@ public class PairOrderedSet
   }
 
   /* boolean remove (Object x, Object y)
-   *    remove o par (x,y) deste conjunto; retorna false se o elemento n„o pertence a este conjunto, e true
-   *    caso contr·rio.
+   *    remove o par (x,y) deste conjunto; retorna false se o elemento n√£o pertence a este conjunto, e true
+   *    caso contr√°rio.
    */
   public boolean remove (Object x, Object y) {
     if (show && name!=null) System.out.println("Removendo ("+x+","+y+") de "+this);
@@ -164,14 +164,14 @@ public class PairOrderedSet
       return false;
     Pair P = (Pair) dictionary.get(x);
     if (P == null) {
-      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") n„o est· em "+this);
+      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") n√£o est√° em "+this);
       return false;
     }
     OrderedSet set = (OrderedSet) P.x;
     Dictionary dict = (Dictionary) P.y;
     DoubleLinkedList element = (DoubleLinkedList) dict.get(y);
     if (element == null) {
-      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") n„o est· em "+this);
+      if ((showErro||show) && (name!=null)) System.out.println("ERRO: ("+x+","+y+") n√£o est√° em "+this);
       return false;
     }
 
@@ -206,7 +206,7 @@ public class PairOrderedSet
   }
 
   /* PairOrderedSet union (PairOrderedSet)
-   *    altera este conjunto, fazendo a uni„o com o conjunto fornecido; retorna este conjunto.
+   *    altera este conjunto, fazendo a uni√£o com o conjunto fornecido; retorna este conjunto.
    */
   public PairOrderedSet union (PairOrderedSet set) {
     if (set==null)
@@ -219,7 +219,7 @@ public class PairOrderedSet
   }
 
   /* PairOrderedSet intersection (PairOrderedSet)
-   *    altera este conjunto, fazendo a intersecÁ„o com o conjunto fornecido; retorna este conjunto.
+   *    altera este conjunto, fazendo a intersec√ß√£o com o conjunto fornecido; retorna este conjunto.
    */
   public PairOrderedSet intersection (PairOrderedSet set) {
     if (set==null)
@@ -288,7 +288,7 @@ public class PairOrderedSet
   }
 
   /* Pair getLast()
-   *    retorna o ˙ltimo par (x,y) deste conjunto.
+   *    retorna o √∫ltimo par (x,y) deste conjunto.
    */
   public Pair getLast() {
     if (last == null)
@@ -329,7 +329,7 @@ public class PairOrderedSet
   }
 
   /* String toString()
-   *    retorna uma String com a representaÁ„o deste conjunto (nome do conjunto + elementos).
+   *    retorna uma String com a representa√ß√£o deste conjunto (nome do conjunto + elementos).
    */
   public String toString() {
     String s = "";

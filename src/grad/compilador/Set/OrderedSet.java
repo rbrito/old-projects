@@ -8,27 +8,27 @@ import List.*;
 /***********************************************************************************************************
  *   CLASSE OrderedSet                                                                                     *
  * ------------------------------------------------------------------------------------------------------- *
- *   Implementa um conjunto genÈrico.                                                                      *
+ *   Implementa um conjunto gen√©rico.                                                                      *
  *                                                                                                         *
- *   OBS: este conjunto pode comportar-se como uma fila ou pilha, se forem usados os mÈtodos addFirst      *
- *        e addLast ao invÈs do mÈtodo add.                                                                *
+ *   OBS: este conjunto pode comportar-se como uma fila ou pilha, se forem usados os m√©todos addFirst      *
+ *        e addLast ao inv√©s do m√©todo add.                                                                *
  ***********************************************************************************************************/
 
 public class OrderedSet
 {
-  /* Detalhes sobre a implementaÁ„o:
-   *    Ser„o usadas duas estruturas: uma lista duplamente ligada e uma tabela de hash. Na tabela de hash,
-   *    cada elemento do conjunto estar· associado ‡ sua posiÁ„o na lista duplamente ligada.
+  /* Detalhes sobre a implementa√ß√£o:
+   *    Ser√£o usadas duas estruturas: uma lista duplamente ligada e uma tabela de hash. Na tabela de hash,
+   *    cada elemento do conjunto estar√° associado √† sua posi√ß√£o na lista duplamente ligada.
    */
   Dictionary dictionary;                  // tabela de hash
-  private DoubleLinkedList first, last;   // ponteiros para o primeiro e ˙ltimo elementos da lista ligada
-  int size;                               // tamanho do conjunto (n˙mero de elementos)
+  private DoubleLinkedList first, last;   // ponteiros para o primeiro e √∫ltimo elementos da lista ligada
+  int size;                               // tamanho do conjunto (n√∫mero de elementos)
   String name;                            // nome do conjunto (opcional)
 
-  public boolean show = false;      // flag de debug: se ativada, mostra o conjunto a cada atualizaÁ„o
+  public boolean show = false;      // flag de debug: se ativada, mostra o conjunto a cada atualiza√ß√£o
   public boolean showErro = true;   // flag de debug: se ativada, mostra mensagem de erro ao acrescentar um
-                                    //                elemento que j· existe ou ao tentar remove um elemento
-                                    //                que n„o existe no conjunto
+                                    //                elemento que j√° existe ou ao tentar remove um elemento
+                                    //                que n√£o existe no conjunto
 
 
   /* construtor OrderedSet()
@@ -66,17 +66,17 @@ public class OrderedSet
   }
 
   /* boolean isEmpty()
-   *    verifica se o conjunto est· vazio.
+   *    verifica se o conjunto est√° vazio.
    */
   public boolean isEmpty() {return (size==0);}
 
   /* int size()
-   *    retorna o n˙mero de elementos deste conjunto.
+   *    retorna o n√∫mero de elementos deste conjunto.
    */
   public int size() {return size;}
 
   /* OrderedSet makeCopy()
-   *    retorna uma cÛpia deste conjunto.
+   *    retorna uma c√≥pia deste conjunto.
    */
   public OrderedSet makeCopy() {
     OrderedSet set = new OrderedSet();
@@ -91,8 +91,8 @@ public class OrderedSet
   public boolean add (Object o) {return addLast(o);}
 
   /* boolean addFirst (Object o)
-   *    acrescenta um elemento ao conjunto, no Ìnicio; retorna false se o elemento pertence a este conjunto,
-   *    e true caso contr·rio.
+   *    acrescenta um elemento ao conjunto, no √≠nicio; retorna false se o elemento pertence a este conjunto,
+   *    e true caso contr√°rio.
    */
   public boolean addFirst (Object o) {
     if (o==null || has(o)) {
@@ -114,7 +114,7 @@ public class OrderedSet
 
   /* boolean addLast (Object o)
    *    acrescenta um elemento ao conjunto, no final; retorna false se o elemento pertence a este conjunto,
-   *    e true caso contr·rio.
+   *    e true caso contr√°rio.
    */
   public boolean addLast (Object o) {
     if (o==null || has(o)) {
@@ -135,8 +135,8 @@ public class OrderedSet
   }
 
   /* boolean remove (Object o)
-   *    remove o elemento deste conjunto; retorna false se o elemento n„o pertence a este conjunto, e true
-   *    caso contr·rio.
+   *    remove o elemento deste conjunto; retorna false se o elemento n√£o pertence a este conjunto, e true
+   *    caso contr√°rio.
    */
   public boolean remove (Object o) {
     if (o==null || size==0) {
@@ -174,7 +174,7 @@ public class OrderedSet
   }
 
   /* OrderedSet union (OrderedSet)
-   *    altera este conjunto, fazendo a uni„o com o conjunto fornecido; retorna este conjunto.
+   *    altera este conjunto, fazendo a uni√£o com o conjunto fornecido; retorna este conjunto.
    */
   public OrderedSet union (OrderedSet set) {
     if (set == null)
@@ -191,7 +191,7 @@ public class OrderedSet
   }
 
   /* OrderedSet intersection (OrderedSet)
-   *    altera este conjunto, fazendo a intersecÁ„o com o conjunto fornecido; retorna este conjunto.
+   *    altera este conjunto, fazendo a intersec√ß√£o com o conjunto fornecido; retorna este conjunto.
    */
   public OrderedSet intersection (OrderedSet set) {
     if (set == null)
@@ -258,7 +258,7 @@ public class OrderedSet
   }
 
   /* Object getLast()
-   *    retorna o ˙ltimo elemento deste conjunto.
+   *    retorna o √∫ltimo elemento deste conjunto.
    */
   public Object getLast() {
     if (last == null)
@@ -287,7 +287,7 @@ public class OrderedSet
   }
 
   /* String toString()
-   *    retorna uma String com a representaÁ„o deste conjunto (nome do conjunto + elementos).
+   *    retorna uma String com a representa√ß√£o deste conjunto (nome do conjunto + elementos).
    */
   public String toString() {
     String s = "";
