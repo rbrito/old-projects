@@ -1,6 +1,7 @@
 package Set;
 
-import java.util.*;
+import java.util.Dictionary;
+import java.util.Hashtable;
 import List.*;
 
 
