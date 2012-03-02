@@ -2,7 +2,7 @@ JFLAGS=-g
 EXPECT=6
 #JIT=-Djava.compiler=tya
 JIT=
-export CLASSPATH=/usr/bin/java/src/grad/compilador/cup.jar:
+export CLASSPATH=/usr/share/java/src/grad/compilador/cup.jar:.
 
 all: Parse/Parse.class Semant/Semant.class Types/Type.class Absyn/Absyn.class ErrorMsg/ErrorMsg.class Symbol/Symbol.class Translate/Translate.class Temp/Temp.class Util/BoolList.class Frame/Frame.class Mips/Frame.class Tree/Exp.class Assem/Instr.class Canon/Canon.class Main/Main.class FlowGraph/AssemFlowGraph.class Graph/Graph.class RegAlloc/Liveness.class FindEscape/FindEscape.class Set/PairOrderedSet.class List/List.class
 
