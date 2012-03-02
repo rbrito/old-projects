@@ -9,10 +9,10 @@ Parse/Parse.class: Parse/*.java Parse/Grm.java Parse/Yylex.java
 	javac ${JFLAGS} Parse/*.java
 
 Parse/Grm.java: Parse/Grm.cup
-	cd Parse; java ${JIT} java_cup.Main -parser Grm -expect ${EXPECT} -dump_grammar -dump_states <Grm.cup >Grm.out 2>Grm.err
+	cd Parse; cup -parser Grm -expect ${EXPECT} -dump_grammar -dump_states <Grm.cup >Grm.out 2>Grm.err
 
 Parse/Yylex.java: Parse/Tiger.lex
-	cd Parse; java ${JIT} JLex.Main Tiger.lex; mv Tiger.lex.java Yylex.java
+	cd Parse; jlex Tiger.lex; mv Tiger.lex.java Yylex.java
 
 Semant/Semant.class: Semant/*.java
 	javac ${JFLAGS} Semant/*.java
