@@ -1,5 +1,8 @@
 @i portugues.w
 
+\def\startsection{\leftline{{\sc 13 de Abril de 1998, às 19:42}}\bigskip
+\let\startsection=\stsec\stsec}
+
 @* SAFER. Esta é a primeira fase do projeto de implementação do algoritmo
 de criptografia chamado SAFER K-64 (Secure And Fast Encryption Routine),
 desenvolvido por J.~Massey para a empresa Cylink Corporation, que utiliza
