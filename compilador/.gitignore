@@ -1,4 +1,5 @@
 *.class
+bin
 src/Parse/Grm.err
 src/Parse/Grm.java
 src/Parse/Grm.out
