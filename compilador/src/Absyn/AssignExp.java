@@ -1,5 +1,4 @@
 package Absyn;
-import Symbol.Symbol;
 public class AssignExp extends Exp {
    public Var var;
    public Exp exp;

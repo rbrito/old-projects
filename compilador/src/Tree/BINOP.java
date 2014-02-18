@@ -1,8 +1,5 @@
 package Tree;
 
-import Temp.Temp;
-import Temp.Label;
-
 public class BINOP extends Exp {
     public int binop;
     public Exp left, right;

@@ -1,6 +1,5 @@
 package Tree;
 
-import Temp.Temp;
 import Temp.Label;
 
 public class NAME extends Exp {

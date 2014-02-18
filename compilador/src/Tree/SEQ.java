@@ -1,8 +1,5 @@
 package Tree;
 
-import Temp.Temp;
-import Temp.Label;
-
 public class SEQ extends Stm {
     public Stm left, right;
     

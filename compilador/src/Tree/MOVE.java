@@ -1,8 +1,5 @@
 package Tree;
 
-import Temp.Temp;
-import Temp.Label;
-
 public class MOVE extends Stm {
     public Exp dst, src;
 

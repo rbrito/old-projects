@@ -1,8 +1,5 @@
 package Tree;
 
-import Temp.Temp;
-import Temp.Label;
-
 public class MEM extends Exp {
     public Exp exp;
 
