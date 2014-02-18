@@ -1,3 +1,21 @@
+Besides a JDK installed (`openjdk-7-jdk` on Debian is enough), you need to
+have installed jlex and cup. You can install them with the following
+command:
+
+    apt-get install jlex cup
+
+Then, you build the project with a simple `make`. Note that `cup.jar` is
+expected to be found in `/usr/share/java/cup.jar` during both compile time
+and run time. Adjust the path, if needed, in the files `compila.sh` and
+`Makefile`.
+
+----
+
+The comments below are of historical value and will, gradually, loose their
+significance as long as the code is changed.
+
+----
+
 Comentários sobre a implementação específica de plataforma do
 Compilador Tiger.
 
