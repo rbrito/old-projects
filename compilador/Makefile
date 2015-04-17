@@ -4,76 +4,25 @@ EXPECT=6
 JIT=
 export CLASSPATH=/usr/share/java/cup.jar:.
 
-all: Parse/Parse.class Semant/Semant.class Types/Type.class Absyn/Absyn.class ErrorMsg/ErrorMsg.class Symbol/Symbol.class Translate/Translate.class Temp/Temp.class Util/BoolList.class Frame/Frame.class Mips/Frame.class Tree/Exp.class Assem/Instr.class Canon/Canon.class Main/Main.class FlowGraph/AssemFlowGraph.class Graph/Graph.class RegAlloc/Liveness.class FindEscape/FindEscape.class Set/PairOrderedSet.class List/List.class
+CLASSES=$(patsubst %.java,%.class,$(wildcard src/*/*.java))
 
-Parse/Parse.class: Parse/*.java Parse/Grm.java Parse/Yylex.java
-	javac ${JFLAGS} Parse/*.java
+all: $(CLASSES)
 
-Parse/Grm.java: Parse/Grm.cup
-	cd Parse; cup -parser Grm -expect ${EXPECT} -dump_grammar -dump_states <Grm.cup >Grm.out 2>Grm.err
+%.class: %.java
+	cd src; javac ${JFLAGS} $(subst src/,,$<)
 
-Parse/Yylex.java: Parse/Tiger.lex
-	cd Parse; jlex Tiger.lex; mv Tiger.lex.java Yylex.java
 
-Semant/Semant.class: Semant/*.java
-	javac ${JFLAGS} Semant/*.java
+## Automatically generated files
+src/Parse/Grm.java: src/Parse/Grm.cup
+	cd src/Parse; cup -parser Grm -expect ${EXPECT} -dump_grammar -dump_states <Grm.cup >Grm.out 2>Grm.err
 
-Types/Type.class: Types/*.java
-	javac ${JFLAGS} Types/*.java
+src/Parse/Yylex.java: src/Parse/Tiger.lex
+	cd src/Parse; jlex Tiger.lex; mv Tiger.lex.java Yylex.java
 
-Absyn/Absyn.class: Absyn/*.java
-	javac ${JFLAGS} Absyn/*.java
 
-ErrorMsg/ErrorMsg.class:  ErrorMsg/*.java
-	javac ${JFLAGS} ErrorMsg/*.java
-
-Symbol/Symbol.class: Symbol/*.java
-	javac ${JFLAGS} Symbol/*.java
-
-Translate/Translate.class: Translate/*.java
-	javac ${JFLAGS} Translate/*.java
-
-Temp/Temp.class: Temp/*.java
-	javac ${JFLAGS} Temp/*.java
-
-Util/BoolList.class: Util/*.java
-	javac ${JFLAGS} Util/*.java
-
-Frame/Frame.class: Frame/*.java
-	javac ${JFLAGS} Frame/*.java
-
-Mips/Frame.class: Mips/*.java
-	javac ${JFLAGS} Mips/*.java
-
-Tree/Exp.class: Tree/*.java
-	javac ${JFLAGS} Tree/*.java
-
-Assem/Instr.class: Assem/*.java
-	javac ${JFLAGS} Assem/*.java
-
-Canon/Canon.class: Canon/*.java
-	javac ${JFLAGS} Canon/*.java
-
-Main/Main.class: Main/*.java
-	javac ${JFLAGS} Main/*.java
-
-FlowGraph/AssemFlowGraph.class: FlowGraph/*.java
-	javac ${JFLAGS} FlowGraph/*.java
-
-Graph/Graph.class: Graph/*.java
-	javac ${JFLAGS} Graph/*.java
-
-RegAlloc/Liveness.class: RegAlloc/*.java
-	javac ${JFLAGS} RegAlloc/*.java
-
-FindEscape/FindEscape.class: FindEscape/*.java
-	javac ${JFLAGS} FindEscape/*.java
-
-Set/PairOrderedSet.class: Set/*.java
-	javac ${JFLAGS} Set/*.java
-
-List/List.class: List/*.java
-	javac ${JFLAGS} List/*.java
+# Dependent on automatically generated files
+src/Parse/Parse.class: src/Parse/*.java src/Parse/Grm.java src/Parse/Yylex.java
+	cd src; javac ${JFLAGS} Parse/*.java
 
 clean:
 	find . -name "*.class" -print | xargs rm -f
@@ -82,3 +31,5 @@ cleanall: clean
 	find . -name "*~" -print | xargs rm -f
 	rm -f Parse/Grm.java Parse/sym.java Parse/Grm.err Parse/Grm.out Parse/Yylex.java testes/*.tig.s
 
+
+.SUFFIXES: .java .class
