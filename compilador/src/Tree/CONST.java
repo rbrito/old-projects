@@ -2,16 +2,16 @@ package Tree;
 
 public class CONST extends Exp {
     public int value;
+
     public CONST(int v) {
-	value=v;
+        value = v;
     }
 
     public ExpList kids() {
-	return null;
+        return null;
     }
 
     public Exp build(ExpList kids) {
-	return this;
+        return this;
     }
 }
-

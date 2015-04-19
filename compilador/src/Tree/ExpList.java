@@ -5,9 +5,7 @@ public class ExpList {
     public ExpList tail;
 
     public ExpList(Exp h, ExpList t) {
-	head=h; tail=t;
+        head = h;
+        tail = t;
     }
 }
-
-
-

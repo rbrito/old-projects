@@ -5,9 +5,7 @@ public class StmList {
     public StmList tail;
 
     public StmList(Stm h, StmList t) {
-	head=h; tail=t;
+        head = h;
+        tail = t;
     }
 }
-
-
-

@@ -4,8 +4,8 @@ package Translate;
 // (strings).
 public class DataFrag extends Frag {
     public String data;
-    
+
     DataFrag(String s) {
-	data = s;
+        data = s;
     }
 }

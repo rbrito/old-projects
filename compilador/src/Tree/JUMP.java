@@ -8,19 +8,19 @@ public class JUMP extends Stm {
     public Temp.LabelList targets;
 
     public JUMP(Exp e, Temp.LabelList t) {
-	exp=e; targets=t;
+        exp = e;
+        targets = t;
     }
 
     public JUMP(Temp.Label target) {
-	this(new NAME(target), new Temp.LabelList(target, null));
+        this(new NAME(target), new Temp.LabelList(target, null));
     }
 
     public ExpList kids() {
-	return new ExpList(exp, null);
+        return new ExpList(exp, null);
     }
 
     public Stm build(ExpList kids) {
-	return new JUMP(kids.head, targets);
+        return new JUMP(kids.head, targets);
     }
 }
-

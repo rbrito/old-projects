@@ -1,7 +1,7 @@
 package List;
 
-public interface List
-{
-  public Object getInfo();
-  public List getNext();
+public interface List {
+    public Object getInfo();
+
+    public List getNext();
 }

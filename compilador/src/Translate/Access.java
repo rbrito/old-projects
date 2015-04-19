@@ -5,7 +5,7 @@ public class Access {
     Frame.Access acc;
 
     Access(Level h, Frame.Access a) {
-	home = h;
-	acc = a;
+        home = h;
+        acc = a;
     }
 }

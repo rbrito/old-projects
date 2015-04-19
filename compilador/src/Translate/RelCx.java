@@ -9,11 +9,13 @@ public class RelCx extends Cx {
 
     // Construtor
     RelCx(int o, Tree.Exp l, Tree.Exp r) {
-	op = o; left = l; right = r;
+        op = o;
+        left = l;
+        right = r;
     }
 
     // Metodo para traducao da expressao relacional na sua IR
     Tree.Stm unCx(Temp.Label t, Temp.Label f) {
-	return new Tree.CJUMP(op, left, right, t, f);
+        return new Tree.CJUMP(op, left, right, t, f);
     }
 }

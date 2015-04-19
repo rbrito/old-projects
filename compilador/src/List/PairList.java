@@ -1,8 +1,9 @@
 package List;
 
-public interface PairList
-{
-  public Object getInfoX();
-  public Object getInfoY();
-  public PairList getNext();
+public interface PairList {
+    public Object getInfoX();
+
+    public Object getInfoY();
+
+    public PairList getNext();
 }

@@ -6,9 +6,9 @@ package Translate;
 public class ProcFrag extends Frag {
     public Frame.Frame frame;
     public Tree.Stm body;
-    
-    public ProcFrag(Tree.Stm b, Frame.Frame f){
-	body = b; 
-	frame = f;
+
+    public ProcFrag(Tree.Stm b, Frame.Frame f) {
+        body = b;
+        frame = f;
     }
 }
