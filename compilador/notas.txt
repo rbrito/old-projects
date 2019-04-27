@@ -1,5 +1,5 @@
 Besides a JDK installed (`openjdk-7-jdk` on Debian is enough), you need to
-have installed jlex and cup. You can install them with the following
+have installed `jlex` and `cup`. You can install them with the following
 command:
 
     apt-get install jlex cup
