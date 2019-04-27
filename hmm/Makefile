@@ -1,6 +1,6 @@
 #
-# Makefile simplificado feito por Rogerio Brito em 2000-01-31.
-# Ultima atualizacao: 2003-12-12.
+# Makefile simplificado feito por Rogério Theodoro de Brito em 2000-01-31.
+# Ultima atualizacao: 2019-04-27.
 #
 
 CC = gcc
