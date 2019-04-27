@@ -7,7 +7,7 @@ CC = gcc
 PROG = hmm
 SRCS = $(PROG).c dado.c
 OBJS = $(SRCS:.c=.o)
-CFLAGS = -Wall -W -Wstrict-prototypes -ansi -pedantic -O2
+CFLAGS = -Wall -Wextra -Wstrict-prototypes -ansi -pedantic -O2
 
 all: $(PROG)
 
